@@ -1,7 +1,13 @@
 //hola
 package persistencia;
 
-import david.pl2_gutierrez_martinez.*;
+import clases_pl2.DiaSemana;
+import clases_pl2.Reserva;
+import clases_pl2.TipoActividad;
+import clases_pl2.Socio;
+import clases_pl2.ActividadEspecial;
+import clases_pl2.Administrador;
+import clases_pl2.Actividad;
 import java.io.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;

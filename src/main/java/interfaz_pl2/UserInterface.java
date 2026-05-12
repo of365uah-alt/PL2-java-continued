@@ -3,9 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package interfaz_pl2;
+import clases_pl2.DiaSemana;
+import clases_pl2.Socio;
+import clases_pl2.ActividadEspecial;
+import clases_pl2.Actividad;
 import java.time.LocalTime;
-import david.pl2_gutierrez_martinez.TipoActividad;
-import david.pl2_gutierrez_martinez.*;
+import clases_pl2.TipoActividad;
 import java.awt.BorderLayout;
 import java.io.IOException;
 import java.util.List;

@@ -4,7 +4,10 @@
  */
 package persistencia;
 
-import david.pl2_gutierrez_martinez.*;
+import clases_pl2.Reserva;
+import clases_pl2.Socio;
+import clases_pl2.Administrador;
+import clases_pl2.Actividad;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

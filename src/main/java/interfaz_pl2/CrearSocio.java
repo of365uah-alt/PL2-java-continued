@@ -4,17 +4,17 @@
  */
 package interfaz_pl2;
 
-import david.pl2_gutierrez_martinez.Actividad;
-import david.pl2_gutierrez_martinez.DiaSemana;
-import david.pl2_gutierrez_martinez.Horario;
-import david.pl2_gutierrez_martinez.TipoActividad;
+import clases_pl2.Actividad;
+import clases_pl2.DiaSemana;
+import clases_pl2.Horario;
+import clases_pl2.TipoActividad;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import persistencia.Gestor;
 import java.util.ArrayList;
-import david.pl2_gutierrez_martinez.Sala;
-import david.pl2_gutierrez_martinez.Socio;
+import clases_pl2.Sala;
+import clases_pl2.Socio;
 import javax.swing.JOptionPane;
 
 /**

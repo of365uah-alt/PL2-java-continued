@@ -1,4 +1,4 @@
-package david.pl2_gutierrez_martinez;
+package clases_pl2;
 
 import java.io.Serializable;
 /**

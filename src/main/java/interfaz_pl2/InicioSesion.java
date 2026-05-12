@@ -4,7 +4,7 @@
  */
 package interfaz_pl2;
 
-import david.pl2_gutierrez_martinez.Socio;
+import clases_pl2.Socio;
 import java.io.IOException;
 import persistencia.Gestor;
 
