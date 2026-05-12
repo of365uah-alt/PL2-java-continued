@@ -415,7 +415,7 @@ public class CrearActividad extends javax.swing.JDialog {
             System.out.println("hola");
             gestor.agregarActividad(actividad);
             gestor.guardarDatos();
-            JOptionPane.showMessageDialog(this,"Los datos han sido guardados con éxito","éxito",JOptionPane.OK_CANCEL_OPTION);
+            JOptionPane.showMessageDialog(this,"Los datos han sido guardados con éxito","éxito",JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
 
         } catch (Exception e) {

@@ -7,12 +7,14 @@ import clases_pl2.DiaSemana;
 import clases_pl2.Socio;
 import clases_pl2.ActividadEspecial;
 import clases_pl2.Actividad;
+import clases_pl2.Administrador;
 import java.time.LocalTime;
 import clases_pl2.TipoActividad;
 import java.awt.BorderLayout;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
@@ -24,8 +26,14 @@ import persistencia.Gestor;
  *
  * @author david
  */
-public class UserInterface extends javax.swing.JFrame {
+public class AdminInterface extends javax.swing.JFrame {
     /*debug
+    
+    Sala sala1 = new Sala("sala1", 20);
+    Horario horario1 = new Horario(List.of(DiaSemana.L), LocalTime.of(18, 0), LocalTime.of(20,0));
+    Actividad actividad1 = new Actividad(1, "Clase yoga", TipoActividad.YOGA, sala1, horario1, "monitor67");
+    ArrayList<Actividad> actividades = new ArrayList<Actividad>();
+/*debug
     
     Sala sala1 = new Sala("sala1", 20);
     Horario horario1 = new Horario(List.of(DiaSemana.L), LocalTime.of(18, 0), LocalTime.of(20,0));
@@ -33,7 +41,7 @@ public class UserInterface extends javax.swing.JFrame {
     ArrayList<Actividad> actividades = new ArrayList<Actividad>();
 
 */ //debug
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(UserInterface.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AdminInterface.class.getName());
     private String CorreoUsuario;
     DefaultTableModel modelTabla = new DefaultTableModel(0, 8);
     
@@ -46,11 +54,11 @@ public class UserInterface extends javax.swing.JFrame {
     /**
      * Creates new form UserInterface
      */
-    public UserInterface(Socio usuario) throws IOException, ClassNotFoundException {
+    public AdminInterface(Administrador usuario) throws IOException, ClassNotFoundException {
         gestor.cargarDatos();
+
         //debug ^
         initComponents();
-        this.CorreoUsuario = CorreoUsuario;
         this.setTitle(CorreoUsuario + " - Javafit Interfaz de Usuario");
         //Verificador de String
         monitorFormattedField.setInputVerifier(new StringVerifier());
@@ -71,11 +79,7 @@ public class UserInterface extends javax.swing.JFrame {
         }
         
         //usuario Label
-        if (usuario.isEsVip()){
-            jLabelUsuario.setText(usuario.getNombre() + "[vip]");
-        }else{
-            jLabelUsuario.setText(usuario.getNombre());
-        }
+        jLabelUsuario.setText("Administrador");
         
         //Tabla
         this.jTable1.setModel(modelTabla);
@@ -119,8 +123,12 @@ public class UserInterface extends javax.swing.JFrame {
         BuscarBoton = new javax.swing.JButton();
         LimpiarBoton = new javax.swing.JButton();
         monitorFormattedField = new javax.swing.JFormattedTextField();
+        LimpiarBoton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jButtonEliminar = new javax.swing.JButton();
+        jButtonEditar = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
@@ -142,7 +150,6 @@ public class UserInterface extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Javafit Interfaz de Usuario");
         setMinimumSize(new java.awt.Dimension(500, 300));
-        setPreferredSize(new java.awt.Dimension(800, 500));
         setSize(new java.awt.Dimension(800, 500));
 
         jPanel1.setName("Actividades"); // NOI18N
@@ -165,6 +172,9 @@ public class UserInterface extends javax.swing.JFrame {
 
         LimpiarBoton.setText("Limpiar");
         LimpiarBoton.addActionListener(this::LimpiarBotonActionPerformed);
+
+        LimpiarBoton1.setText("Actualizar");
+        LimpiarBoton1.addActionListener(this::LimpiarBoton1ActionPerformed);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -190,7 +200,9 @@ public class UserInterface extends javax.swing.JFrame {
                 .addComponent(BuscarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(LimpiarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(137, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(LimpiarBoton1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -199,7 +211,7 @@ public class UserInterface extends javax.swing.JFrame {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                             .addComponent(jLabel2)
                             .addComponent(TipoComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -211,7 +223,8 @@ public class UserInterface extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(BuscarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(LimpiarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(LimpiarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(LimpiarBoton1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
 
@@ -245,6 +258,21 @@ public class UserInterface extends javax.swing.JFrame {
         jTable1.setToolTipText("");
         jScrollPane1.setViewportView(jTable1);
 
+        jButtonEliminar.setBackground(new java.awt.Color(255, 153, 153));
+        jButtonEliminar.setForeground(new java.awt.Color(0, 0, 0));
+        jButtonEliminar.setText("Eliminar");
+        jButtonEliminar.addActionListener(this::jButtonEliminarActionPerformed);
+
+        jButtonEditar.setBackground(new java.awt.Color(204, 204, 255));
+        jButtonEditar.setForeground(new java.awt.Color(0, 0, 0));
+        jButtonEditar.setText("Editar");
+        jButtonEditar.addActionListener(this::jButtonEditarActionPerformed);
+
+        jButton4.setBackground(new java.awt.Color(0, 255, 0));
+        jButton4.setForeground(new java.awt.Color(0, 0, 0));
+        jButton4.setText("Crear");
+        jButton4.addActionListener(this::jButton4ActionPerformed);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -253,7 +281,14 @@ public class UserInterface extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
+                    .addComponent(jScrollPane1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton4)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButtonEditar)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButtonEliminar)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -262,7 +297,12 @@ public class UserInterface extends javax.swing.JFrame {
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 102, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonEliminar)
+                    .addComponent(jButtonEditar)
+                    .addComponent(jButton4))
+                .addGap(0, 55, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Actividades", jPanel1);
@@ -373,6 +413,56 @@ public class UserInterface extends javax.swing.JFrame {
        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        CrearActividad crearactividad = new CrearActividad(this, rootPaneCheckingEnabled);
+        crearactividad.setVisible(true);
+        crearactividad.setLocationRelativeTo(null);
+        
+        
+        
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void LimpiarBoton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LimpiarBoton1ActionPerformed
+        actualizarTabla(gestor.getActividades());// TODO add your handling code here:
+    }//GEN-LAST:event_LimpiarBoton1ActionPerformed
+
+    private void jButtonEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarActionPerformed
+        int fila = jTable1.getSelectedRow();
+        if (fila < 0) {
+            JOptionPane.showMessageDialog(this, "Selecciona una actividad.");
+            return; 
+        }
+        int id = (int) modelTabla.getValueAt(fila, 0);
+        int confirm = JOptionPane.showConfirmDialog(this, // Option Panel!
+                "¿Eliminar la actividad seleccionada y todas sus reservas?",
+                "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            gestor.eliminarActividad(id);
+            actualizarTabla(gestor.getActividades());
+            try { // Guardar Datos
+                gestor.guardarDatos();
+            } catch (IOException ex) {
+                System.getLogger(AdminInterface.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
+        }
+
+        
+
+
+// TODO add your handling code here:
+    }//GEN-LAST:event_jButtonEliminarActionPerformed
+
+    private void jButtonEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarActionPerformed
+        int fila = jTable1.getSelectedRow();
+        if (fila < 0) { JOptionPane.showMessageDialog(this, "Selecciona una actividad."); return; }
+        int id = (int) modelTabla.getValueAt(fila, 0);
+        Actividad act = gestor.getActividades().stream() //stream
+                .filter(a -> a.getId() == id).findFirst().orElse(null);
+        if (act == null) return;
+        //Añadir Código!
+    }//GEN-LAST:event_jButtonEditarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -397,21 +487,25 @@ public class UserInterface extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             try {
-                new UserInterface(new Socio("Debug",2,"","",true,"","")).setVisible(true);
+                new AdminInterface(new Administrador("admin@javafit.com", "1234")).setVisible(true);
             } catch (IOException ex) {
-                System.getLogger(UserInterface.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                System.getLogger(AdminInterface.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
             } catch (ClassNotFoundException ex) {
-                System.getLogger(UserInterface.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                System.getLogger(AdminInterface.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
             }
-        }); 
+        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BuscarBoton;
     private javax.swing.JComboBox<String> DiaComboBox;
     private javax.swing.JButton LimpiarBoton;
+    private javax.swing.JButton LimpiarBoton1;
     private javax.swing.JComboBox<String> TipoComboBox;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButtonEditar;
+    private javax.swing.JButton jButtonEliminar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

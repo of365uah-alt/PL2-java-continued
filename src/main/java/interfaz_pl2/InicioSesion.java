@@ -4,6 +4,7 @@
  */
 package interfaz_pl2;
 
+import clases_pl2.Administrador;
 import clases_pl2.Socio;
 import java.io.IOException;
 import persistencia.Gestor;
@@ -13,13 +14,7 @@ import persistencia.Gestor;
  * @author david
  */
 public class InicioSesion extends javax.swing.JFrame {
-    
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(InicioSesion.class.getName());
-    
-    //debug
-    Socio usuario  = new Socio("david", 644652055, "casa", "tarjeta", true, "david@javafit.com", "1234");
-    //debug
-    
     /**
      * Creates new form InicioSesion
      */
@@ -42,13 +37,12 @@ public class InicioSesion extends javax.swing.JFrame {
         jDialog2 = new javax.swing.JDialog();
         jDialog3 = new javax.swing.JDialog();
         jButton1 = new javax.swing.JButton();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jTextArea3 = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jPasswordField1 = new javax.swing.JPasswordField();
         jButton2 = new javax.swing.JButton();
+        jTextField1 = new javax.swing.JTextField();
 
         javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
         jDialog1.getContentPane().setLayout(jDialog1Layout);
@@ -88,17 +82,6 @@ public class InicioSesion extends javax.swing.JFrame {
         jButton1.setText("Iniciar sesión");
         jButton1.addActionListener(this::jButton1ActionPerformed);
 
-        jTextArea3.setColumns(20);
-        jTextArea3.setRows(5);
-        jTextArea3.setText("ejemplo@javafit.com");
-        jTextArea3.setMinimumSize(new java.awt.Dimension(100, 40));
-        jTextArea3.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                jTextArea3FocusGained(evt);
-            }
-        });
-        jScrollPane3.setViewportView(jTextArea3);
-
         jLabel1.setFont(new java.awt.Font("Segoe UI Black", 0, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Inicio de Sesión");
@@ -123,15 +106,16 @@ public class InicioSesion extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(44, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel3)
-                        .addComponent(jLabel2)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel2)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
+                                .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addContainerGap(56, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -141,9 +125,9 @@ public class InicioSesion extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
                 .addGap(28, 28, 28)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -167,7 +151,7 @@ public class InicioSesion extends javax.swing.JFrame {
         } catch (ClassNotFoundException ex) {
             System.getLogger(CrearSocio.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
-        String correo = jTextArea3.getText();
+        String correo = jTextField1.getText();
         String passwordIngresada = new String(this.jPasswordField1.getPassword());
         for (Socio i : gestor.getSocios()) {
             System.out.println(i.getCorreo()); ///DEBUG!!!!
@@ -175,27 +159,41 @@ public class InicioSesion extends javax.swing.JFrame {
 
         try{
             Socio socio = gestor.autenticarSocio(correo, passwordIngresada);
-            UserInterface mainInterface = new UserInterface(correo);
+            UserInterface mainInterface = new UserInterface(socio);
             mainInterface.setVisible(true);
             mainInterface.setLocationRelativeTo(null); //Centrar
             this.dispose();
         }catch(IllegalArgumentException e){
-            ErrorCorreo dialog = new ErrorCorreo(this, true, "Usuario no encontrado"); // Formateamos en html para 
+            //caso admin
+            try{
+                Administrador admin = gestor.autenticarAdmin(correo, passwordIngresada);
+                //UserInterface mainInterface = new UserInterface;
+                //mainInterface.setVisible(true);
+                //mainInterface.setLocationRelativeTo(null); //Centrar
+                this.dispose();
+            }catch (IllegalArgumentException i){
+                ErrorCorreo dialog = new ErrorCorreo(this, true, "Usuario no encontrado"); // Formateamos en html para 
+                dialog.setVisible(true);
+                dialog.setLocationRelativeTo(this);
+  
+            }catch (Exception i){
+                ErrorCorreo dialog = new ErrorCorreo(this, true, e.toString()); // Formateamos en html para  
+                dialog.setVisible(true);
+                dialog.setLocationRelativeTo(this);
+            }
 
         }catch (IOException e){
-            ErrorCorreo dialog = new ErrorCorreo(this, true, e.toString()); // Formateamos en html para 
+            ErrorCorreo dialog = new ErrorCorreo(this, true, e.toString()); // Formateamos en html para
+            dialog.setVisible(true);
+            dialog.setLocationRelativeTo(this);
 
         }catch (ClassNotFoundException e ){
-            ErrorCorreo dialog = new ErrorCorreo(this, true, e.toString()); // Formateamos en html para 
+            ErrorCorreo dialog = new ErrorCorreo(this, true, e.toString()); // Formateamos en html para
+            dialog.setVisible(true);
+            dialog.setLocationRelativeTo(this);
 
         }
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jTextArea3FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextArea3FocusGained
-        if (jTextArea3.getText().equals("ejemplo@javafit.com")) {
-            jTextArea3.setText("");
-        }
-    }//GEN-LAST:event_jTextArea3FocusGained
 
     private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
         // TODO add your handling code here:
@@ -242,7 +240,6 @@ public class InicioSesion extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextArea jTextArea3;
+    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }

@@ -87,6 +87,8 @@ public class Gestor {
                 nextActividadId = estado.nextActividadId;
                 nextReservaId   = estado.nextReservaId;
             } else {
+                inicializarAdminPorDefecto();
+                guardarDatos();
                 // Primera ejecución: datos de demostración
             }
         }
@@ -286,5 +288,12 @@ public class Gestor {
             case SATURDAY  -> DiaSemana.S;
             case SUNDAY    -> DiaSemana.D;
         };
+    }
+    
+    
+    private void inicializarAdminPorDefecto() { // Admins!
+        administradores.add(new Administrador("admin@javafit.com", "admin"));
+        administradores.add(new Administrador("admin2@javafit.com", "admin2"));
+
     }
 }
