@@ -167,9 +167,9 @@ public class InicioSesion extends javax.swing.JFrame {
             //caso admin
             try{
                 Administrador admin = gestor.autenticarAdmin(correo, passwordIngresada);
-                //UserInterface mainInterface = new UserInterface;
-                //mainInterface.setVisible(true);
-                //mainInterface.setLocationRelativeTo(null); //Centrar
+                AdminInterface mainInterface = new AdminInterface(admin);
+                mainInterface.setVisible(true);
+                mainInterface.setLocationRelativeTo(null); //Centrar
                 this.dispose();
             }catch (IllegalArgumentException i){
                 ErrorCorreo dialog = new ErrorCorreo(this, true, "Usuario no encontrado"); // Formateamos en html para 

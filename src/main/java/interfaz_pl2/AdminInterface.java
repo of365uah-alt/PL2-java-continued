@@ -415,8 +415,9 @@ public class AdminInterface extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         CrearActividad crearactividad = new CrearActividad(this, rootPaneCheckingEnabled);
-        crearactividad.setVisible(true);
         crearactividad.setLocationRelativeTo(null);
+        crearactividad.setVisible(true);
+        actualizarTabla(gestor.getActividades());
         
         
         
@@ -461,6 +462,19 @@ public class AdminInterface extends javax.swing.JFrame {
                 .filter(a -> a.getId() == id).findFirst().orElse(null);
         if (act == null) return;
         //Añadir Código!
+        ActualizarActividad actualizaractividad = new ActualizarActividad(this, true, act.getTitulo(), act.getTipo(), act.getMonitor(), act.getSala().getNombre(), act.getSala().getAforoMaximo(), act.getHorario());
+        actualizaractividad.setLocationRelativeTo(null);
+        actualizaractividad.setVisible(true);
+        if (actualizaractividad.isOperacionExitosa()){
+             gestor.eliminarActividad(id);
+        }
+        actualizarTabla(gestor.getActividades());
+        try { // Guardar Datos
+            gestor.guardarDatos();
+        } catch (IOException ex) {
+            System.getLogger(AdminInterface.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        
     }//GEN-LAST:event_jButtonEditarActionPerformed
 
     /**
