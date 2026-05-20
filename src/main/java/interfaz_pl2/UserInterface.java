@@ -35,10 +35,20 @@ public class UserInterface extends javax.swing.JFrame {
 */ //debug
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(UserInterface.class.getName());
     private String CorreoUsuario;
-    DefaultTableModel modelTabla = new DefaultTableModel(0, 8);
+    DefaultTableModel modelTabla = new DefaultTableModel(0, 8) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false; // Evita que el usuario edite la tabla por accidente
+        }
+    };
     private Socio usuarioActual;
     private final Gestor gestor = Gestor.getInstancia();
-    
+    DefaultTableModel modelTablaReservas = new DefaultTableModel(0, 7) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false; // Hacemos que las celdas no se puedan editar haciendo doble clic
+        }
+    };
     
     
     
@@ -49,6 +59,7 @@ public class UserInterface extends javax.swing.JFrame {
     public UserInterface(Socio usuario) throws IOException, ClassNotFoundException {
         gestor.cargarDatos();
         initComponents();
+        this.setSize(850, 650);
         this.usuarioActual = usuario;
         this.CorreoUsuario = CorreoUsuario;
         this.setTitle(CorreoUsuario + " - Javafit Interfaz de Usuario");
@@ -78,11 +89,34 @@ public class UserInterface extends javax.swing.JFrame {
             jLabelUsuario.setText(usuario.getNombre());
         }
         
-        //Tabla
+        // --- Tabla de Actividades ---
+        // 1. Asignamos los nombres de las columnas para que aparezca la fila de información
+        String[] columnasActividades = {"ID", "Clase", "Tipo", "Monitor", "Sala", "Horario", "Vip", "Precio"};
+        modelTabla.setColumnIdentifiers(columnasActividades);
+        
+        // 2. Le asignamos el modelo ya configurado a la tabla visual
         this.jTable1.setModel(modelTabla);
         
+        // 3. Rellenamos la tabla con los datos reales usando tu Gestor
         actualizarTabla(gestor.getActividades());
         
+        // --- NUEVO: Configuración de la Tabla de Reservas ---
+        // Asignamos los nombres de las columnas que nos has pedido
+        String[] columnasReservas = {"ID", "Actividad", "Tipo", "Monitor", "Sala", "Fecha", "Coste"};
+        modelTablaReservas.setColumnIdentifiers(columnasReservas);
+        
+        // Le decimos al componente visual que use nuestro modelo
+        this.jTableReservas.setModel(modelTablaReservas);
+        // Rellenamos la tabla con las reservas del usuario
+        actualizarTablaReservas();
+        
+        this.jTable1.getColumnModel().getColumn(0).setMinWidth(30);
+        this.jTable1.getColumnModel().getColumn(0).setMaxWidth(50);
+        this.jTable1.getColumnModel().getColumn(0).setPreferredWidth(40);
+        
+        this.jTableReservas.getColumnModel().getColumn(0).setMinWidth(30);
+        this.jTableReservas.getColumnModel().getColumn(0).setMaxWidth(50);
+        this.jTableReservas.getColumnModel().getColumn(0).setPreferredWidth(40);
     }
     void actualizarTabla(List<Actividad> lista) {
         modelTabla.setRowCount(0);
@@ -97,6 +131,34 @@ public class UserInterface extends javax.swing.JFrame {
            
         }
         
+    }
+    
+    private void actualizarTablaReservas() {
+        // 1. Limpiamos la tabla por si tuviera datos antiguos
+        modelTablaReservas.setRowCount(0);
+        
+        // 2. Le pedimos al gestor las reservas específicas de este usuario
+        // Asegúrate de importar clases_pl2.Reserva en la parte superior si NetBeans te lo pide
+        List<clases_pl2.Reserva> misReservas = gestor.getReservasDeSocio(usuarioActual);
+        
+        // 3. Recorremos cada reserva para extraer sus datos
+        for (clases_pl2.Reserva r : misReservas) {
+            clases_pl2.Actividad a = r.getActividad();
+            
+            // Damos formato al precio (ej: 29,99€)
+            String costeFormateado = String.format("%.2f€", r.getCoste());
+            
+            // 4. Añadimos la fila completa con el orden exacto de columnas que pediste
+            modelTablaReservas.addRow(new Object[]{
+                r.getId(),
+                a.getTitulo(),
+                a.getTipo(),
+                a.getMonitor(),
+                a.getSala().getNombre(),
+                r.getFecha().toString(),
+                costeFormateado
+            });
+        }
     }
     private void cargarDatosPerfil() {
         jTextFieldCorreo.setText(usuarioActual.getCorreo());
@@ -135,7 +197,12 @@ public class UserInterface extends javax.swing.JFrame {
         monitorFormattedField = new javax.swing.JFormattedTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jButtonReservar = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
+        jLabel7 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTableReservas = new javax.swing.JTable();
+        jButtonCancelarReserva = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabelMiPerfil = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
@@ -176,7 +243,14 @@ public class UserInterface extends javax.swing.JFrame {
         setPreferredSize(new java.awt.Dimension(800, 500));
         setSize(new java.awt.Dimension(800, 500));
 
+        jTabbedPane1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTabbedPane1MouseClicked(evt);
+            }
+        });
+
         jPanel1.setName("Actividades"); // NOI18N
+        jPanel1.setPreferredSize(new java.awt.Dimension(850, 600));
 
         jLabel1.setText("Filtros de búsqueda");
 
@@ -224,7 +298,7 @@ public class UserInterface extends javax.swing.JFrame {
                 .addComponent(BuscarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(LimpiarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(137, Short.MAX_VALUE))
+                .addContainerGap(169, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -279,6 +353,9 @@ public class UserInterface extends javax.swing.JFrame {
         jTable1.setToolTipText("");
         jScrollPane1.setViewportView(jTable1);
 
+        jButtonReservar.setText("Reservar Actividad");
+        jButtonReservar.addActionListener(this::jButtonReservarActionPerformed);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -287,8 +364,14 @@ public class UserInterface extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 799, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButtonReservar)
+                .addGap(21, 21, 21))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -296,20 +379,57 @@ public class UserInterface extends javax.swing.JFrame {
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 102, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jButtonReservar)
+                .addGap(0, 62, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Actividades", jPanel1);
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel7.setText("Mis Reservas");
+
+        jTableReservas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(jTableReservas);
+
+        jButtonCancelarReserva.setText("CancelarReserva");
+        jButtonCancelarReserva.addActionListener(this::jButtonCancelarReservaActionPerformed);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel7)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 799, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(45, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButtonCancelarReserva)
+                .addGap(58, 58, 58))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 495, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButtonCancelarReserva)
+                .addContainerGap(47, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Mis reservas", jPanel2);
@@ -378,7 +498,7 @@ public class UserInterface extends javax.swing.JFrame {
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel18, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE))
+                                    .addComponent(jLabel18, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE))
                                 .addGap(39, 39, 39)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jTextFieldNuevaContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -445,7 +565,7 @@ public class UserInterface extends javax.swing.JFrame {
                     .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(5, 5, 5)
                 .addComponent(jButton2)
-                .addContainerGap(141, Short.MAX_VALUE))
+                .addContainerGap(142, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Mi Perfil", jPanel3);
@@ -501,7 +621,7 @@ public class UserInterface extends javax.swing.JFrame {
                         .addComponent(jLabel5))
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(0, 0, 0)
-                .addComponent(jTabbedPane1)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 531, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -605,13 +725,11 @@ public class UserInterface extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         try {
-            // 1. Extraer los textos y quitar los espacios en blanco de los extremos con trim()
             String nombre = jTextFieldNombre.getText().trim();
             String telefonoStr = jTextFieldTelefono.getText().trim();
             String direccion = jTextFieldDireccion.getText().trim();
             String tarjetaStr = jTextFieldTarjeta.getText().trim();
 
-            // 2. Validar que los campos obligatorios no estén vacíos
             if (nombre.isEmpty() || telefonoStr.isEmpty() || direccion.isEmpty() || tarjetaStr.isEmpty()) {
                 javax.swing.JOptionPane.showMessageDialog(this, 
                     "Por favor, rellena todos los datos personales básicos.", 
@@ -620,8 +738,6 @@ public class UserInterface extends javax.swing.JFrame {
                 return; // Detenemos la ejecución aquí, no seguimos guardando
             }
 
-            // 3. Validar el formato (que el teléfono y tarjeta sean solo números)
-            // "\\d+" significa "uno o más dígitos"
             if (!telefonoStr.matches("\\d+")) {
                 javax.swing.JOptionPane.showMessageDialog(this, 
                     "El teléfono solo debe contener números.", 
@@ -638,15 +754,12 @@ public class UserInterface extends javax.swing.JFrame {
                 return;
             }
 
-            // 4. Comprobación opcional de la contraseña
             String nuevaClave = jTextFieldNuevaContraseña.getText();
             String repetirClave = jTextFieldRepetirContraseña.getText();
 
-            // Solo hacemos algo si el usuario ha escrito en ALGUNO de los dos campos
             if (!nuevaClave.isEmpty() || !repetirClave.isEmpty()) {
                 if (nuevaClave.equals(repetirClave)) {
                     usuarioActual.setClave(nuevaClave); 
-                    // Limpiamos los campos visuales por seguridad
                     jTextFieldNuevaContraseña.setText("");
                     jTextFieldRepetirContraseña.setText("");
                 } else {
@@ -658,28 +771,18 @@ public class UserInterface extends javax.swing.JFrame {
                 }
             }
 
-            // 5. Actualizar el objeto Socio con los datos validados
             usuarioActual.setNombre(nombre);
             usuarioActual.setDireccion(direccion);
             usuarioActual.setEsVip(jCheckBoxSuscripciónVIP.isSelected());
             
-            /* 
-             * IMPORTANTE: Si en tu clase Socio 'telefono' y 'tarjeta' son de tipo 'int', 
-             * te recomiendo encarecidamente que vayas a Socio.java y los cambies a tipo 'String'. 
-             * Si por algún motivo ESTÁS OBLIGADO a que sean números, deberás usar Long.parseLong() 
-             * en lugar de Integer.parseInt() para que quepan números largos.
-             */
             usuarioActual.setTelefono(Integer.parseInt(telefonoStr)); 
             usuarioActual.setTarjetaDeCredito(tarjetaStr);
 
-            // 6. Actualizar la etiqueta visual del nombre arriba
             if (usuarioActual.isEsVip()){
                 jLabelUsuario.setText(usuarioActual.getNombre() + " [vip]");
             } else {
                 jLabelUsuario.setText(usuarioActual.getNombre());
             }
-
-            // 7. Guardar en el Gestor y en el archivo .dat
             gestor.actualizarSocio(usuarioActual); 
             gestor.guardarDatos();
             
@@ -689,15 +792,118 @@ public class UserInterface extends javax.swing.JFrame {
                 javax.swing.JOptionPane.INFORMATION_MESSAGE);
 
         } catch (Exception ex) {
-            // Si ocurre CUALQUIER otro error, mostramos un mensaje amigable
             javax.swing.JOptionPane.showMessageDialog(this, 
                 "Se ha producido un error inesperado al guardar: " + ex.getMessage(), 
                 "Error", 
                 javax.swing.JOptionPane.ERROR_MESSAGE);
-            // Registramos el error internamente para poder depurarlo nosotros
             logger.log(java.util.logging.Level.SEVERE, "Error al guardar perfil", ex);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButtonReservarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonReservarActionPerformed
+        // 1. Averiguar qué fila de la tabla ha seleccionado el usuario
+        int filaSeleccionada = jTable1.getSelectedRow();
+
+        // 2. Si no hay ninguna seleccionada (devuelve -1), avisamos al usuario
+        if (filaSeleccionada == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Por favor, selecciona primero una actividad de la tabla haciendo clic en ella.", 
+                "Ninguna actividad seleccionada", 
+                javax.swing.JOptionPane.WARNING_MESSAGE);
+            return; // Detenemos la ejecución
+        }
+
+        // 3. Extraer el ID de la actividad de esa fila (está en la columna 0)
+        // Hacemos un cast a (Integer) porque sabemos que esa columna guarda enteros
+        int idActividad = (Integer) jTable1.getValueAt(filaSeleccionada, 0);
+
+        // 4. Buscar el objeto Actividad real en la lista de tu Gestor usando ese ID
+        Actividad actividadSeleccionada = null;
+        for (Actividad a : gestor.getActividades()) {
+            if (a.getId() == idActividad) {
+                actividadSeleccionada = a;
+                break; // Cuando la encontramos, paramos de buscar
+            }
+        }
+
+        // 5. Si la hemos encontrado, abrimos la nueva ventana
+        if (actividadSeleccionada != null) {
+            // Usamos nuestro nuevo constructor pasándole la actividad y el usuario logueado
+            ReservarActividad ventanaReserva = new ReservarActividad(actividadSeleccionada, usuarioActual);
+            ventanaReserva.setVisible(true); // Mostramos la ventana
+
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Ha ocurrido un error interno. No se ha encontrado la actividad.", 
+                "Error", 
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButtonReservarActionPerformed
+
+    private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
+        actualizarTablaReservas();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTabbedPane1MouseClicked
+
+    private void jButtonCancelarReservaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarReservaActionPerformed
+        try {
+            // 1. Averiguar qué fila de la tabla de reservas está seleccionada
+            int filaSeleccionada = jTableReservas.getSelectedRow();
+
+            // 2. Si no hay ninguna seleccionada (devuelve -1), avisamos al usuario y paramos
+            if (filaSeleccionada == -1) {
+                javax.swing.JOptionPane.showMessageDialog(this, 
+                    "Por favor, selecciona primero la reserva que deseas cancelar haciendo clic en la tabla.", 
+                    "Ninguna reserva seleccionada", 
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+                return; // Detenemos la ejecución aquí
+            }
+
+            // 3. Confirmar con el usuario si realmente desea cancelar (¡Buena práctica!)
+            int confirmacion = javax.swing.JOptionPane.showConfirmDialog(this,
+                    "¿Estás seguro de que deseas cancelar esta reserva?",
+                    "Confirmar cancelación",
+                    javax.swing.JOptionPane.YES_NO_OPTION);
+
+            // Si el usuario elige "Sí" (YES_OPTION), procedemos a borrarla
+            if (confirmacion == javax.swing.JOptionPane.YES_OPTION) {
+                
+                // 4. Extraer el ID de la reserva (está en la columna 0 de la tabla)
+                // Usamos (Integer) para transformar el Objeto de la tabla a un número entero
+                int idReserva = (Integer) jTableReservas.getValueAt(filaSeleccionada, 0);
+
+                // 5. Llamar al Gestor para cancelar la reserva
+                boolean cancelada = gestor.cancelarReserva(idReserva);
+
+                if (cancelada) {
+                    // 6. Si se borró correctamente, guardamos los cambios en el archivo de datos
+                    gestor.guardarDatos();
+
+                    // 7. Actualizamos la tabla visualmente para que desaparezca la fila
+                    actualizarTablaReservas();
+
+                    // 8. Mostramos un mensaje de éxito
+                    javax.swing.JOptionPane.showMessageDialog(this, 
+                        "Reserva cancelada con éxito.", 
+                        "Éxito", 
+                        javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    // Por si la reserva ya no existiera en el gestor por algún motivo
+                    javax.swing.JOptionPane.showMessageDialog(this, 
+                        "No se pudo encontrar la reserva en el sistema.", 
+                        "Error", 
+                        javax.swing.JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            
+        } catch (Exception ex) {
+            // Capturamos cualquier error inesperado para que el programa no se cierre
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Se produjo un error al cancelar la reserva: " + ex.getMessage(), 
+                "Error Interno", 
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButtonCancelarReservaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -739,6 +945,8 @@ public class UserInterface extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> TipoComboBox;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButtonCancelarReserva;
+    private javax.swing.JButton jButtonReservar;
     private javax.swing.JCheckBox jCheckBoxSuscripciónVIP;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
@@ -752,6 +960,7 @@ public class UserInterface extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabelMiPerfil;
     private javax.swing.JLabel jLabelUsuario;
     private javax.swing.JPanel jPanel1;
@@ -761,8 +970,10 @@ public class UserInterface extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTableReservas;
     private javax.swing.JTextField jTextFieldCorreo;
     private javax.swing.JTextField jTextFieldDireccion;
     private javax.swing.JTextField jTextFieldNombre;
