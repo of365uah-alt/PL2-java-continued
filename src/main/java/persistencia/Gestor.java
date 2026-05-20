@@ -296,4 +296,20 @@ public class Gestor {
         administradores.add(new Administrador("admin2@javafit.com", "admin2"));
 
     }
+    public void actualizarSocio(Socio socioActualizado) {
+        // Recorremos la lista de socios guardada en el Gestor
+        for (int i = 0; i < socios.size(); i++) {
+            Socio socioEnGestor = socios.get(i);
+            
+            // Comparamos los correos electrónicos ignorando mayúsculas/minúsculas
+            if (socioEnGestor.getCorreo().equalsIgnoreCase(socioActualizado.getCorreo())) {
+                
+                // Si encontramos coincidencia, reemplazamos el socio viejo por el actualizado
+                socios.set(i, socioActualizado);
+                
+                // Salimos del bucle porque ya hemos encontrado y actualizado al usuario
+                break; 
+            }
+        }
+    }
 }

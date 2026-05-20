@@ -36,7 +36,7 @@ public class UserInterface extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(UserInterface.class.getName());
     private String CorreoUsuario;
     DefaultTableModel modelTabla = new DefaultTableModel(0, 8);
-    
+    private Socio usuarioActual;
     private final Gestor gestor = Gestor.getInstancia();
     
     
@@ -48,10 +48,11 @@ public class UserInterface extends javax.swing.JFrame {
      */
     public UserInterface(Socio usuario) throws IOException, ClassNotFoundException {
         gestor.cargarDatos();
-        //debug ^
         initComponents();
+        this.usuarioActual = usuario;
         this.CorreoUsuario = CorreoUsuario;
         this.setTitle(CorreoUsuario + " - Javafit Interfaz de Usuario");
+        cargarDatosPerfil();
         //Verificador de String
         monitorFormattedField.setInputVerifier(new StringVerifier());
         
@@ -95,6 +96,19 @@ public class UserInterface extends javax.swing.JFrame {
             });
            
         }
+        
+    }
+    private void cargarDatosPerfil() {
+        jTextFieldCorreo.setText(usuarioActual.getCorreo());
+        jTextFieldCorreo.setEditable(false); // Opcional: Bloqueamos el correo para que no se pueda cambiar, suele ser la clave primaria
+        
+        jTextFieldNombre.setText(usuarioActual.getNombre());
+        // Suponiendo que estos métodos (getTelefono, getDireccion, etc.) existen en tu clase Socio
+        jTextFieldTelefono.setText( "" +usuarioActual.getTelefono());
+        jTextFieldDireccion.setText(usuarioActual.getDireccion());
+        jTextFieldTarjeta.setText(usuarioActual.getTarjetaDeCredito());
+        
+        jCheckBoxSuscripciónVIP.setSelected(usuarioActual.isEsVip());
     }
 
     /**
@@ -123,6 +137,23 @@ public class UserInterface extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
+        jLabelMiPerfil = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jCheckBoxSuscripciónVIP = new javax.swing.JCheckBox();
+        jTextFieldCorreo = new javax.swing.JTextField();
+        jTextFieldNombre = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        jTextFieldTelefono = new javax.swing.JTextField();
+        jLabel14 = new javax.swing.JLabel();
+        jTextFieldDireccion = new javax.swing.JTextField();
+        jLabel15 = new javax.swing.JLabel();
+        jTextFieldTarjeta = new javax.swing.JTextField();
+        jLabel16 = new javax.swing.JLabel();
+        jTextFieldNuevaContraseña = new javax.swing.JTextField();
+        jLabel17 = new javax.swing.JLabel();
+        jTextFieldRepetirContraseña = new javax.swing.JTextField();
+        jLabel18 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jLabelUsuario = new javax.swing.JLabel();
@@ -283,15 +314,138 @@ public class UserInterface extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Mis reservas", jPanel2);
 
+        jLabelMiPerfil.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabelMiPerfil.setText("Mi Perfil");
+
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel6.setText("Correo:");
+
+        jCheckBoxSuscripciónVIP.setSelected(true);
+        jCheckBoxSuscripciónVIP.setText("Suscripción VIP (49.99€/mes)");
+        jCheckBoxSuscripciónVIP.addActionListener(this::jCheckBoxSuscripciónVIPActionPerformed);
+
+        jTextFieldCorreo.addActionListener(this::jTextFieldCorreoActionPerformed);
+
+        jTextFieldNombre.addActionListener(this::jTextFieldNombreActionPerformed);
+
+        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel11.setText("Nombre:");
+
+        jTextFieldTelefono.addActionListener(this::jTextFieldTelefonoActionPerformed);
+
+        jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel14.setText("Telefono:");
+
+        jTextFieldDireccion.addActionListener(this::jTextFieldDireccionActionPerformed);
+
+        jLabel15.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel15.setText("Dirección:");
+
+        jTextFieldTarjeta.addActionListener(this::jTextFieldTarjetaActionPerformed);
+
+        jLabel16.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel16.setText("Tarjeta:");
+
+        jTextFieldNuevaContraseña.addActionListener(this::jTextFieldNuevaContraseñaActionPerformed);
+
+        jLabel17.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel17.setText("Nueva contraseña:");
+
+        jTextFieldRepetirContraseña.addActionListener(this::jTextFieldRepetirContraseñaActionPerformed);
+
+        jLabel18.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel18.setText("Repetir contraseña:");
+
+        jButton2.setText("Guardar cambios");
+        jButton2.addActionListener(this::jButton2ActionPerformed);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton2))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabelMiPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel18, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE))
+                                .addGap(39, 39, 39)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jTextFieldNuevaContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextFieldRepetirContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jCheckBoxSuscripciónVIP, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldTarjeta))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldDireccion))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldTelefono))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldNombre))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldCorreo)))))
+                .addGap(121, 121, 121))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 495, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabelMiPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jTextFieldCorreo)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
+                .addGap(5, 5, 5)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jTextFieldNombre)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(5, 5, 5)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jTextFieldTelefono)
+                    .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(5, 5, 5)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jTextFieldDireccion)
+                    .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(5, 5, 5)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jTextFieldTarjeta)
+                    .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(5, 5, 5)
+                .addComponent(jCheckBoxSuscripciónVIP, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jTextFieldNuevaContraseña)
+                    .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(5, 5, 5)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jTextFieldRepetirContraseña)
+                    .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(5, 5, 5)
+                .addComponent(jButton2)
+                .addContainerGap(141, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Mi Perfil", jPanel3);
@@ -346,7 +500,7 @@ public class UserInterface extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(jLabel5))
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(43, 43, 43)
+                .addGap(0, 0, 0)
                 .addComponent(jTabbedPane1)
                 .addContainerGap())
         );
@@ -417,6 +571,134 @@ public class UserInterface extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_monitorFormattedFieldActionPerformed
 
+    private void jTextFieldCorreoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldCorreoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldCorreoActionPerformed
+
+    private void jTextFieldNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldNombreActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldNombreActionPerformed
+
+    private void jTextFieldTelefonoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTelefonoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldTelefonoActionPerformed
+
+    private void jTextFieldDireccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldDireccionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldDireccionActionPerformed
+
+    private void jTextFieldTarjetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTarjetaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldTarjetaActionPerformed
+
+    private void jTextFieldNuevaContraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldNuevaContraseñaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldNuevaContraseñaActionPerformed
+
+    private void jTextFieldRepetirContraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldRepetirContraseñaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldRepetirContraseñaActionPerformed
+
+    private void jCheckBoxSuscripciónVIPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxSuscripciónVIPActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBoxSuscripciónVIPActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        try {
+            // 1. Extraer los textos y quitar los espacios en blanco de los extremos con trim()
+            String nombre = jTextFieldNombre.getText().trim();
+            String telefonoStr = jTextFieldTelefono.getText().trim();
+            String direccion = jTextFieldDireccion.getText().trim();
+            String tarjetaStr = jTextFieldTarjeta.getText().trim();
+
+            // 2. Validar que los campos obligatorios no estén vacíos
+            if (nombre.isEmpty() || telefonoStr.isEmpty() || direccion.isEmpty() || tarjetaStr.isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(this, 
+                    "Por favor, rellena todos los datos personales básicos.", 
+                    "Faltan datos", 
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+                return; // Detenemos la ejecución aquí, no seguimos guardando
+            }
+
+            // 3. Validar el formato (que el teléfono y tarjeta sean solo números)
+            // "\\d+" significa "uno o más dígitos"
+            if (!telefonoStr.matches("\\d+")) {
+                javax.swing.JOptionPane.showMessageDialog(this, 
+                    "El teléfono solo debe contener números.", 
+                    "Error de formato", 
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            if (!tarjetaStr.matches("\\d+")) {
+                javax.swing.JOptionPane.showMessageDialog(this, 
+                    "La tarjeta solo debe contener números.", 
+                    "Error de formato", 
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // 4. Comprobación opcional de la contraseña
+            String nuevaClave = jTextFieldNuevaContraseña.getText();
+            String repetirClave = jTextFieldRepetirContraseña.getText();
+
+            // Solo hacemos algo si el usuario ha escrito en ALGUNO de los dos campos
+            if (!nuevaClave.isEmpty() || !repetirClave.isEmpty()) {
+                if (nuevaClave.equals(repetirClave)) {
+                    usuarioActual.setClave(nuevaClave); 
+                    // Limpiamos los campos visuales por seguridad
+                    jTextFieldNuevaContraseña.setText("");
+                    jTextFieldRepetirContraseña.setText("");
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(this, 
+                        "Las contraseñas no coinciden. Inténtalo de nuevo.", 
+                        "Error de Contraseña", 
+                        javax.swing.JOptionPane.ERROR_MESSAGE);
+                    return; // Detenemos la ejecución si las contraseñas están mal
+                }
+            }
+
+            // 5. Actualizar el objeto Socio con los datos validados
+            usuarioActual.setNombre(nombre);
+            usuarioActual.setDireccion(direccion);
+            usuarioActual.setEsVip(jCheckBoxSuscripciónVIP.isSelected());
+            
+            /* 
+             * IMPORTANTE: Si en tu clase Socio 'telefono' y 'tarjeta' son de tipo 'int', 
+             * te recomiendo encarecidamente que vayas a Socio.java y los cambies a tipo 'String'. 
+             * Si por algún motivo ESTÁS OBLIGADO a que sean números, deberás usar Long.parseLong() 
+             * en lugar de Integer.parseInt() para que quepan números largos.
+             */
+            usuarioActual.setTelefono(Integer.parseInt(telefonoStr)); 
+            usuarioActual.setTarjetaDeCredito(tarjetaStr);
+
+            // 6. Actualizar la etiqueta visual del nombre arriba
+            if (usuarioActual.isEsVip()){
+                jLabelUsuario.setText(usuarioActual.getNombre() + " [vip]");
+            } else {
+                jLabelUsuario.setText(usuarioActual.getNombre());
+            }
+
+            // 7. Guardar en el Gestor y en el archivo .dat
+            gestor.actualizarSocio(usuarioActual); 
+            gestor.guardarDatos();
+            
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "¡Perfil actualizado correctamente!", 
+                "Éxito", 
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (Exception ex) {
+            // Si ocurre CUALQUIER otro error, mostramos un mensaje amigable
+            javax.swing.JOptionPane.showMessageDialog(this, 
+                "Se ha producido un error inesperado al guardar: " + ex.getMessage(), 
+                "Error", 
+                javax.swing.JOptionPane.ERROR_MESSAGE);
+            // Registramos el error internamente para poder depurarlo nosotros
+            logger.log(java.util.logging.Level.SEVERE, "Error al guardar perfil", ex);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -456,11 +738,21 @@ public class UserInterface extends javax.swing.JFrame {
     private javax.swing.JButton LimpiarBoton;
     private javax.swing.JComboBox<String> TipoComboBox;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JCheckBox jCheckBoxSuscripciónVIP;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabelMiPerfil;
     private javax.swing.JLabel jLabelUsuario;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -471,6 +763,13 @@ public class UserInterface extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextField jTextFieldCorreo;
+    private javax.swing.JTextField jTextFieldDireccion;
+    private javax.swing.JTextField jTextFieldNombre;
+    private javax.swing.JTextField jTextFieldNuevaContraseña;
+    private javax.swing.JTextField jTextFieldRepetirContraseña;
+    private javax.swing.JTextField jTextFieldTarjeta;
+    private javax.swing.JTextField jTextFieldTelefono;
     private javax.swing.JFormattedTextField monitorFormattedField;
     // End of variables declaration//GEN-END:variables
 }
