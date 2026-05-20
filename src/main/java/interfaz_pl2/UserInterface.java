@@ -152,6 +152,7 @@ public class UserInterface extends javax.swing.JFrame {
         jLabel2.setText("Tipo:");
 
         TipoComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        TipoComboBox.addActionListener(this::TipoComboBoxActionPerformed);
 
         jLabel3.setText("Monitor:");
 
@@ -165,6 +166,8 @@ public class UserInterface extends javax.swing.JFrame {
 
         LimpiarBoton.setText("Limpiar");
         LimpiarBoton.addActionListener(this::LimpiarBotonActionPerformed);
+
+        monitorFormattedField.addActionListener(this::monitorFormattedFieldActionPerformed);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -354,11 +357,44 @@ public class UserInterface extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BuscarBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuscarBotonActionPerformed
-        // TODO add your handling code here:
+        String tipoStr = (String) TipoComboBox.getSelectedItem();
+        String diaStr = (String) DiaComboBox.getSelectedItem();
+        String monitor = monitorFormattedField.getText().trim();
+        //Traducir el  String a Enum
+        TipoActividad tipo = null; 
+        if (tipoStr != null && !tipoStr.equals("Todos")) {
+            for (TipoActividad t : TipoActividad.values()) {
+                if (t.getDescripcion().equals(tipoStr)) {
+                    tipo = t;
+                    break;
+                }
+            }
+        }
+        
+        DiaSemana dia = null;
+        if (diaStr != null && !diaStr.equals("Todos")) {
+            for (DiaSemana d : DiaSemana.values()) {
+                if (d.getNombre().equals(diaStr)) {
+                    dia = d;
+                    break;
+                }
+            }
+        }
+        
+        if (monitor.isEmpty()) {
+            monitor = null;
+        }
+        List<Actividad> actividadesFiltradas = gestor.buscarActividades(tipo, monitor, dia);
+
+        actualizarTabla(actividadesFiltradas);
     }//GEN-LAST:event_BuscarBotonActionPerformed
 
     private void LimpiarBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LimpiarBotonActionPerformed
-        // TODO add your handling code here:
+        TipoComboBox.setSelectedItem("Todos");
+        DiaComboBox.setSelectedItem("Todos");
+        monitorFormattedField.setText("");
+
+        actualizarTabla(gestor.getActividades());
     }//GEN-LAST:event_LimpiarBotonActionPerformed
 
     private void DiaComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DiaComboBoxActionPerformed
@@ -372,6 +408,14 @@ public class UserInterface extends javax.swing.JFrame {
        InicioSesion.setLocationRelativeTo(null); //Centrar
        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void TipoComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TipoComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TipoComboBoxActionPerformed
+
+    private void monitorFormattedFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_monitorFormattedFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_monitorFormattedFieldActionPerformed
 
     /**
      * @param args the command line arguments

@@ -394,11 +394,44 @@ public class AdminInterface extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BuscarBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuscarBotonActionPerformed
-        // TODO add your handling code here:
+        String tipoStr = (String) TipoComboBox.getSelectedItem();
+        String diaStr = (String) DiaComboBox.getSelectedItem();
+        String monitor = monitorFormattedField.getText().trim();
+        //Traducir el  String a Enum
+        TipoActividad tipo = null; 
+        if (tipoStr != null && !tipoStr.equals("Todos")) {
+            for (TipoActividad t : TipoActividad.values()) {
+                if (t.getDescripcion().equals(tipoStr)) {
+                    tipo = t;
+                    break;
+                }
+            }
+        }
+        
+        DiaSemana dia = null;
+        if (diaStr != null && !diaStr.equals("Todos")) {
+            for (DiaSemana d : DiaSemana.values()) {
+                if (d.getNombre().equals(diaStr)) {
+                    dia = d;
+                    break;
+                }
+            }
+        }
+        
+        if (monitor.isEmpty()) {
+            monitor = null;
+        }
+        List<Actividad> actividadesFiltradas = gestor.buscarActividades(tipo, monitor, dia);
+
+        actualizarTabla(actividadesFiltradas);        // TODO add your handling code here:
     }//GEN-LAST:event_BuscarBotonActionPerformed
 
     private void LimpiarBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LimpiarBotonActionPerformed
-        // TODO add your handling code here:
+        TipoComboBox.setSelectedItem("Todos");
+        DiaComboBox.setSelectedItem("Todos");
+        monitorFormattedField.setText("");
+
+        actualizarTabla(gestor.getActividades());        // TODO add your handling code here:
     }//GEN-LAST:event_LimpiarBotonActionPerformed
 
     private void DiaComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DiaComboBoxActionPerformed
