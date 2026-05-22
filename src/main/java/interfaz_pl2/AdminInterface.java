@@ -47,6 +47,13 @@ public class AdminInterface extends javax.swing.JFrame {
     
     private final Gestor gestor = Gestor.getInstancia();
     
+    DefaultTableModel modelTablaSocios = new DefaultTableModel(0, 5) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+    };
+    
     
     
     
@@ -85,6 +92,19 @@ public class AdminInterface extends javax.swing.JFrame {
         this.jTable1.setModel(modelTabla);
         
         actualizarTabla(gestor.getActividades());
+        TipoComboBoxTipoUsuario.removeAllItems();
+        TipoComboBoxTipoUsuario.addItem("Todos");
+        TipoComboBoxTipoUsuario.addItem("VIP");
+        TipoComboBoxTipoUsuario.addItem("Básico");
+        
+        // 2. Configurar las columnas de la tabla de socios
+        String[] columnasSocios = {"Nombre", "Correo", "Teléfono", "Tipo", "Cuota Mensual"};
+        modelTablaSocios.setColumnIdentifiers(columnasSocios);
+        this.jTableSocios.setModel(modelTablaSocios);
+        
+        // 3. Cargar todos los socios al abrir la ventana
+        // Asumimos que gestor.getSocios() devuelve la List<Socio> completa
+        actualizarTablaSocios(gestor.getSocios());
         
     }
     void actualizarTabla(List<Actividad> lista) {
@@ -100,6 +120,20 @@ public class AdminInterface extends javax.swing.JFrame {
            
         }
     }
+    void actualizarTablaSocios(List<Socio> lista) {
+        modelTablaSocios.setRowCount(0); // Limpiar datos antiguos
+        
+        for (Socio s : lista) {
+            // Traducimos el booleano 'esVip' a texto
+            String tipoUsuario = s.isEsVip() ? "VIP" : "Básico";
+            // Formateamos la cuota para que se vea como dinero (ej: 29,99€)
+            String cuota = String.format("%.2f€", s.getCuotaMensual());
+            
+            // Añadimos la fila con los datos (Nombre, Correo, Teléfono, Tipo, Cuota)
+            modelTablaSocios.addRow(new Object[]{
+                s.getNombre(), s.getCorreo(), s.getTelefono(), tipoUsuario, cuota
+            });
+        }}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -130,6 +164,14 @@ public class AdminInterface extends javax.swing.JFrame {
         jButtonEditar = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        TipoComboBoxTipoUsuario = new javax.swing.JComboBox<>();
+        jLabel8 = new javax.swing.JLabel();
+        jTextFieldNombreOCorreo = new javax.swing.JTextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTableSocios = new javax.swing.JTable();
+        jButtonBuscarSocios = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
@@ -302,23 +344,80 @@ public class AdminInterface extends javax.swing.JFrame {
                     .addComponent(jButtonEliminar)
                     .addComponent(jButtonEditar)
                     .addComponent(jButton4))
-                .addGap(0, 55, Short.MAX_VALUE))
+                .addGap(0, 81, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Actividades", jPanel1);
+
+        jLabel6.setText("Filtros de búsqueda");
+
+        jLabel7.setText("Tipo:");
+
+        TipoComboBoxTipoUsuario.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        TipoComboBoxTipoUsuario.addActionListener(this::TipoComboBoxTipoUsuarioActionPerformed);
+
+        jLabel8.setText("Nombre/Correo:");
+
+        jTextFieldNombreOCorreo.addActionListener(this::jTextFieldNombreOCorreoActionPerformed);
+
+        jTableSocios.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(jTableSocios);
+
+        jButtonBuscarSocios.setText("Buscar");
+        jButtonBuscarSocios.addActionListener(this::jButtonBuscarSociosActionPerformed);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel6)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(TipoComboBoxTipoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel8)
+                                .addGap(18, 18, 18)
+                                .addComponent(jTextFieldNombreOCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButtonBuscarSocios)
+                                .addGap(0, 239, Short.MAX_VALUE))
+                            .addComponent(jScrollPane2))))
+                .addGap(29, 29, 29))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 495, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel7)
+                    .addComponent(TipoComboBoxTipoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8)
+                    .addComponent(jTextFieldNombreOCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonBuscarSocios))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(51, 51, 51))
         );
 
-        jTabbedPane1.addTab("Mis reservas", jPanel2);
+        jTabbedPane1.addTab("Socios", jPanel2);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -328,10 +427,10 @@ public class AdminInterface extends javax.swing.JFrame {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 495, Short.MAX_VALUE)
+            .addGap(0, 521, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.addTab("Mi Perfil", jPanel3);
+        jTabbedPane1.addTab("Reservas", jPanel3);
 
         jLabel5.setFont(new java.awt.Font("Trebuchet MS", 1, 48)); // NOI18N
         jLabel5.setText("JavaFit");
@@ -510,6 +609,57 @@ public class AdminInterface extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jButtonEditarActionPerformed
 
+    private void TipoComboBoxTipoUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TipoComboBoxTipoUsuarioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TipoComboBoxTipoUsuarioActionPerformed
+
+    private void jTextFieldNombreOCorreoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldNombreOCorreoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldNombreOCorreoActionPerformed
+
+    private void jButtonBuscarSociosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarSociosActionPerformed
+        String tipoSeleccionado = (String) TipoComboBoxTipoUsuario.getSelectedItem();
+        // Lo pasamos a minúsculas para que la búsqueda ignore mayúsculas/minúsculas
+        String textoBusqueda = jTextFieldNombreOCorreo.getText().trim().toLowerCase(); 
+
+        // 2. Obtener la lista completa del Gestor y crear una nueva lista para los resultados
+        List<Socio> todosLosSocios = gestor.getSocios();
+        List<Socio> sociosFiltrados = new ArrayList<>();
+
+        // 3. Iterar sobre todos los socios y aplicar los filtros
+        for (Socio s : todosLosSocios) {
+            
+            // Filtro 1: Comprobar el Tipo (VIP / Básico / Todos)
+            boolean coincideTipo = true;
+            if (tipoSeleccionado.equals("VIP") && !s.isEsVip()) {
+                coincideTipo = false; // Queremos VIP pero este no lo es
+            } else if (tipoSeleccionado.equals("Básico") && s.isEsVip()) {
+                coincideTipo = false; // Queremos Básico pero este es VIP
+            }
+
+            // Filtro 2: Comprobar Nombre o Correo
+            boolean coincideTexto = true;
+            if (!textoBusqueda.isEmpty()) {
+                // Buscamos si el texto introducido está contenido en el nombre o el correo
+                boolean enNombre = s.getNombre().toLowerCase().contains(textoBusqueda);
+                boolean enCorreo = s.getCorreo().toLowerCase().contains(textoBusqueda);
+                
+                // Si no está ni en el nombre ni en el correo, descartamos este socio
+                if (!enNombre && !enCorreo) {
+                    coincideTexto = false;
+                }
+            }
+
+            // Si el socio cumple AMBOS filtros, lo añadimos a la lista final
+            if (coincideTipo && coincideTexto) {
+                sociosFiltrados.add(s);
+            }
+        }
+
+        // 4. Actualizar la tabla visual con la lista ya filtrada
+        actualizarTablaSocios(sociosFiltrados);        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonBuscarSociosActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -549,8 +699,10 @@ public class AdminInterface extends javax.swing.JFrame {
     private javax.swing.JButton LimpiarBoton;
     private javax.swing.JButton LimpiarBoton1;
     private javax.swing.JComboBox<String> TipoComboBox;
+    private javax.swing.JComboBox<String> TipoComboBoxTipoUsuario;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButtonBuscarSocios;
     private javax.swing.JButton jButtonEditar;
     private javax.swing.JButton jButtonEliminar;
     private javax.swing.JLabel jLabel1;
@@ -558,6 +710,9 @@ public class AdminInterface extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabelUsuario;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -566,8 +721,11 @@ public class AdminInterface extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTableSocios;
+    private javax.swing.JTextField jTextFieldNombreOCorreo;
     private javax.swing.JFormattedTextField monitorFormattedField;
     // End of variables declaration//GEN-END:variables
 }
