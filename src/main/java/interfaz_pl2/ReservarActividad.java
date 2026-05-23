@@ -74,6 +74,7 @@ public class ReservarActividad extends javax.swing.JFrame {
         
         // Un detalle extra para los días disponibles
         jLabelDiasDisponibles.setText("Horario original: " + actividad.getHorario().toString());
+        this.pack();
     }
 
     /**

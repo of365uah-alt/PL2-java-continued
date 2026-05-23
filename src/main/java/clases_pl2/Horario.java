@@ -67,7 +67,7 @@ public class Horario implements Serializable {
 
     @Override
     public String toString() {
-        return "Horario{" + "dias=" + dias + ", horaFin=" + horaFin + ", horaInicio=" + horaInicio + '}';
+        return dias.toString() + ", " + horaInicio + " - " + horaFin;
     }
     
 

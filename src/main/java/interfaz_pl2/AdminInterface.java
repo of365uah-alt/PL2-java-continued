@@ -12,8 +12,11 @@ import java.time.LocalTime;
 import clases_pl2.TipoActividad;
 import java.awt.BorderLayout;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
@@ -53,7 +56,12 @@ public class AdminInterface extends javax.swing.JFrame {
             return false;
         }
     };
-    
+    DefaultTableModel modelTablaReservas = new DefaultTableModel(0, 6) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false; // Bloquea la edición manual
+        }
+    };
     
     
     
@@ -105,7 +113,25 @@ public class AdminInterface extends javax.swing.JFrame {
         // 3. Cargar todos los socios al abrir la ventana
         // Asumimos que gestor.getSocios() devuelve la List<Socio> completa
         actualizarTablaSocios(gestor.getSocios());
+        DefaultTableModel modelTablaReservas = new DefaultTableModel(0, 6) {
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return false; // Bloquea la edición manual
+        }
+    };
+     
+        // --- CONFIGURACIÓN PESTAÑA RESERVAS ---
         
+        // 1. Configurar las columnas
+        String[] columnasReservas = {"ID", "Socio", "Actividad", "Tipo", "Fecha", "Coste"};
+        modelTablaReservas.setColumnIdentifiers(columnasReservas);
+        this.jTableReservas.setModel(modelTablaReservas);
+        
+        // 2. Cargar todas las reservas al iniciar (usando el método del Gestor)
+        actualizarTablaReservas(gestor.getTodasReservas());
+        
+        // 3. Ajustes visuales (opcional): Hacer la columna ID más pequeña
+        this.jTableReservas.getColumnModel().getColumn(0).setMaxWidth(50);
     }
     void actualizarTabla(List<Actividad> lista) {
         modelTabla.setRowCount(0);
@@ -134,7 +160,23 @@ public class AdminInterface extends javax.swing.JFrame {
                 s.getNombre(), s.getCorreo(), s.getTelefono(), tipoUsuario, cuota
             });
         }}
-
+    void actualizarTablaReservas(List<clases_pl2.Reserva> lista) {
+        modelTablaReservas.setRowCount(0); // Limpiamos la tabla
+        
+        for (clases_pl2.Reserva r : lista) {
+            String costeFormateado = String.format("%.2f€", r.getCoste());
+            
+            // Añadimos: ID, Nombre del Socio, Título Actividad, Tipo, Fecha, Coste
+            modelTablaReservas.addRow(new Object[]{
+                r.getId(),
+                r.getSocio().getNombre(),
+                r.getActividad().getTitulo(),
+                r.getActividad().getTipo().getDescripcion(),
+                r.getFecha().toString(),
+                costeFormateado
+            });
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -173,6 +215,13 @@ public class AdminInterface extends javax.swing.JFrame {
         jTableSocios = new javax.swing.JTable();
         jButtonBuscarSocios = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jButtonBuscarReservas = new javax.swing.JButton();
+        jSpinnerFechaReservas = new javax.swing.JSpinner();
+        jCheckBoxFiltroPorFecha = new javax.swing.JCheckBox();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTableReservas = new javax.swing.JTable();
         jLabel5 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jLabelUsuario = new javax.swing.JLabel();
@@ -419,15 +468,65 @@ public class AdminInterface extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Socios", jPanel2);
 
+        jLabel9.setText("Filtrar por fecha");
+
+        jLabel10.setText("Desde:");
+
+        jButtonBuscarReservas.setText("Buscar");
+        jButtonBuscarReservas.addActionListener(this::jButtonBuscarReservasActionPerformed);
+
+        jSpinnerFechaReservas.setModel(new javax.swing.SpinnerDateModel(new java.util.Date(), null, null, java.util.Calendar.ERA));
+
+        jTableReservas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(jTableReservas);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel9)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(jCheckBoxFiltroPorFecha)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel10)
+                        .addGap(18, 18, 18)
+                        .addComponent(jSpinnerFechaReservas, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButtonBuscarReservas)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 792, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 521, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel10)
+                    .addComponent(jButtonBuscarReservas)
+                    .addComponent(jSpinnerFechaReservas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCheckBoxFiltroPorFecha))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(50, 50, 50))
         );
 
         jTabbedPane1.addTab("Reservas", jPanel3);
@@ -594,7 +693,7 @@ public class AdminInterface extends javax.swing.JFrame {
                 .filter(a -> a.getId() == id).findFirst().orElse(null);
         if (act == null) return;
         //Añadir Código!
-        ActualizarActividad actualizaractividad = new ActualizarActividad(this, true, act.getTitulo(), act.getTipo(), act.getMonitor(), act.getSala().getNombre(), act.getSala().getAforoMaximo(), act.getHorario());
+        ActualizarActividad actualizaractividad = new ActualizarActividad(this, true, act);
         actualizaractividad.setLocationRelativeTo(null);
         actualizaractividad.setVisible(true);
         if (actualizaractividad.isOperacionExitosa()){
@@ -660,6 +759,28 @@ public class AdminInterface extends javax.swing.JFrame {
         actualizarTablaSocios(sociosFiltrados);        // TODO add your handling code here:
     }//GEN-LAST:event_jButtonBuscarSociosActionPerformed
 
+    private void jButtonBuscarReservasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarReservasActionPerformed
+        // 1. Comprobamos si el administrador quiere filtrar por fecha
+        if (jCheckBoxFiltroPorFecha.isSelected()) {
+            
+            // Extraer la fecha del JSpinner y convertirla a LocalDate
+            Date fechaSeleccionada = (Date) jSpinnerFechaReservas.getValue();
+            LocalDate fechaLocal = fechaSeleccionada.toInstant()
+                                      .atZone(ZoneId.systemDefault())
+                                      .toLocalDate();
+            
+            // Usamos el método que ya tienes en Gestor para obtener reservas desde esa fecha
+            List<clases_pl2.Reserva> reservasFiltradas = gestor.getReservasDesde(fechaLocal);
+            
+            // Actualizamos la tabla
+            actualizarTablaReservas(reservasFiltradas);
+            
+        } else {
+            // 2. Si la casilla no está marcada, mostramos absolutamente todas las reservas
+            actualizarTablaReservas(gestor.getTodasReservas());
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonBuscarReservasActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -702,10 +823,13 @@ public class AdminInterface extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> TipoComboBoxTipoUsuario;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButtonBuscarReservas;
     private javax.swing.JButton jButtonBuscarSocios;
     private javax.swing.JButton jButtonEditar;
     private javax.swing.JButton jButtonEliminar;
+    private javax.swing.JCheckBox jCheckBoxFiltroPorFecha;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -713,6 +837,7 @@ public class AdminInterface extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel jLabelUsuario;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -722,8 +847,11 @@ public class AdminInterface extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JSpinner jSpinnerFechaReservas;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTableReservas;
     private javax.swing.JTable jTableSocios;
     private javax.swing.JTextField jTextFieldNombreOCorreo;
     private javax.swing.JFormattedTextField monitorFormattedField;

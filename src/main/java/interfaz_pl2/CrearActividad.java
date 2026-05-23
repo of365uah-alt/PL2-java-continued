@@ -5,6 +5,7 @@
 package interfaz_pl2;
 
 import clases_pl2.Actividad;
+import clases_pl2.ActividadEspecial;
 import clases_pl2.DiaSemana;
 import clases_pl2.Horario;
 import clases_pl2.TipoActividad;
@@ -38,6 +39,13 @@ public class CrearActividad extends javax.swing.JDialog {
         jSpinnerMinutosInicio.setPreferredSize(tamañoSpinner);
         jSpinnerHoraFin.setPreferredSize(tamañoSpinner);
         jSpinnerMinutosFin.setPreferredSize(tamañoSpinner);
+        //ocultar por defecto
+        jLabelPrecio.setVisible(false);
+        jFormattedTextFieldPrecio.setVisible(false);
+        jLabelDescripcion.setVisible(false);
+        jTextFieldDescrpcion.setVisible(false);
+        
+        
         // Le decimos a la ventana que recalcule los tamaños con estas nuevas reglas
         this.pack();
         for (int i = 0; i < TipoActividad.values().length;i++){
@@ -87,6 +95,11 @@ public class CrearActividad extends javax.swing.JDialog {
         jCheckBoxDomingo = new javax.swing.JCheckBox();
         jButtonCancelar = new javax.swing.JButton();
         jButtonAplicar = new javax.swing.JButton();
+        jCheckBoxActividadEspecial = new javax.swing.JCheckBox();
+        jLabelPrecio = new javax.swing.JLabel();
+        jLabelDescripcion = new javax.swing.JLabel();
+        jTextFieldDescrpcion = new javax.swing.JTextField();
+        jFormattedTextFieldPrecio = new javax.swing.JFormattedTextField();
 
         jLabel2.setText("jLabel2");
 
@@ -185,6 +198,17 @@ public class CrearActividad extends javax.swing.JDialog {
         jButtonAplicar.setText("Aplicar");
         jButtonAplicar.addActionListener(this::jButtonAplicarActionPerformed);
 
+        jCheckBoxActividadEspecial.setText("Actividad Especial (con precio)");
+        jCheckBoxActividadEspecial.addActionListener(this::jCheckBoxActividadEspecialActionPerformed);
+
+        jLabelPrecio.setText("Precio(€):");
+
+        jLabelDescripcion.setText("Descripcion:");
+
+        jTextFieldDescrpcion.addActionListener(this::jTextFieldDescrpcionActionPerformed);
+
+        jFormattedTextFieldPrecio.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("¤#,##0.00"))));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -198,6 +222,7 @@ public class CrearActividad extends javax.swing.JDialog {
                         .addGap(18, 18, 18)
                         .addComponent(jButtonAplicar))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jCheckBoxActividadEspecial)
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(18, 18, 18)
@@ -257,14 +282,22 @@ public class CrearActividad extends javax.swing.JDialog {
                             .addGap(12, 12, 12)
                             .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jSpinnerAforo))))
+                            .addComponent(jSpinnerAforo))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabelPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(jFormattedTextFieldPrecio))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabelDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(jTextFieldDescrpcion, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(75, 75, 75)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextFieldTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -308,7 +341,17 @@ public class CrearActividad extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextFieldImagen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jCheckBoxActividadEspecial)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabelPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jFormattedTextFieldPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabelDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldDescrpcion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonCancelar)
                     .addComponent(jButtonAplicar))
@@ -403,7 +446,7 @@ public class CrearActividad extends javax.swing.JDialog {
                     break; // Lo encontramos, salimos del bucle
                 }
             }
-            Horario horario = new Horario(dias, inicio, finalt);
+            Horario horario = new Horario(dias, finalt, inicio);
             Sala sala = new Sala(jTextFieldSala.getText(), (int) jSpinnerAforo.getValue());
                         //excepcion
             if (jTextFieldSala.getText().isBlank()){ throw new Exception("La sala debe tener título");}
@@ -411,20 +454,67 @@ public class CrearActividad extends javax.swing.JDialog {
                         //excepcion
             if (monitor.isEmpty()){ throw new Exception("debe tener un monitor asignado");}
 
-            Actividad actividad = new Actividad(0, titulo,tipoactividad , sala, horario, monitor);
-            System.out.println("hola");
+            Actividad actividad; // Declaramos la variable genérica
+
+            // Comprobamos si la casilla está marcada
+            if (jCheckBoxActividadEspecial.isSelected()) {
+                
+                // 1. Validar la descripción
+                String descripcion = jTextFieldDescrpcion.getText();
+                if (descripcion.isBlank()) { 
+                    throw new Exception("La actividad especial debe tener una descripción."); 
+                }
+                
+                // 2. Validar y extraer el precio de forma segura
+                double precio = 0.0;
+                try {
+                    // Obtenemos el texto, le quitamos el símbolo de euro y cambiamos comas por puntos
+                    String textoPrecio = jFormattedTextFieldPrecio.getText().replace("€", "").replace(",", ".").trim();
+                    if (textoPrecio.isBlank()) throw new Exception();
+                    precio = Double.parseDouble(textoPrecio);
+                } catch (Exception e) {
+                    throw new Exception("El precio introducido no es válido. Escribe solo números (ej: 15.50)");
+                }
+
+                // 3. Crear el objeto ActividadEspecial
+                actividad = new ActividadEspecial(precio, descripcion, 0, titulo, tipoactividad, sala, horario, monitor);
+                
+            } else {
+                // 4. Si no es especial, creamos la Actividad normal
+                actividad = new Actividad(0, titulo, tipoactividad, sala, horario, monitor);
+            }
+
+            // Guardamos en el gestor (funcionará igual para ambas porque ActividadEspecial hereda de Actividad)
             gestor.agregarActividad(actividad);
             gestor.guardarDatos();
-            JOptionPane.showMessageDialog(this,"Los datos han sido guardados con éxito","éxito",JOptionPane.INFORMATION_MESSAGE);
+            
+            JOptionPane.showMessageDialog(this, "La actividad ha sido creada con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this,e,"ERROR!",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, e.getMessage(), "ERROR!", JOptionPane.ERROR_MESSAGE);
         }
         
         
         
     }//GEN-LAST:event_jButtonAplicarActionPerformed
+
+    private void jTextFieldDescrpcionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldDescrpcionActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldDescrpcionActionPerformed
+
+    private void jCheckBoxActividadEspecialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxActividadEspecialActionPerformed
+        boolean esEspecial = jCheckBoxActividadEspecial.isSelected();
+        
+        // Les pasamos ese valor a los componentes. Si esEspecial es true, se verán.
+        jLabelPrecio.setVisible(esEspecial);
+        jFormattedTextFieldPrecio.setVisible(esEspecial);
+        jLabelDescripcion.setVisible(esEspecial);
+        jTextFieldDescrpcion.setVisible(esEspecial);
+        
+        // Reajustamos la ventana para que se adapte al nuevo contenido
+        this.pack();        // TODO add your handling code here:
+    }//GEN-LAST:event_jCheckBoxActividadEspecialActionPerformed
 
     /**
      * @param args the command line arguments
@@ -466,6 +556,7 @@ public class CrearActividad extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAplicar;
     private javax.swing.JButton jButtonCancelar;
+    private javax.swing.JCheckBox jCheckBoxActividadEspecial;
     private javax.swing.JCheckBox jCheckBoxDomingo;
     private javax.swing.JCheckBox jCheckBoxJueves;
     private javax.swing.JCheckBox jCheckBoxLunes;
@@ -474,6 +565,7 @@ public class CrearActividad extends javax.swing.JDialog {
     private javax.swing.JCheckBox jCheckBoxSabado;
     private javax.swing.JCheckBox jCheckBoxViernes;
     private javax.swing.JComboBox<String> jComboBoxTipo;
+    private javax.swing.JFormattedTextField jFormattedTextFieldPrecio;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -487,12 +579,15 @@ public class CrearActividad extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabelDescripcion;
+    private javax.swing.JLabel jLabelPrecio;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSpinner jSpinnerAforo;
     private javax.swing.JSpinner jSpinnerHoraFin;
     private javax.swing.JSpinner jSpinnerHoraInicio;
     private javax.swing.JSpinner jSpinnerMinutosFin;
     private javax.swing.JSpinner jSpinnerMinutosInicio;
+    private javax.swing.JTextField jTextFieldDescrpcion;
     private javax.swing.JTextField jTextFieldImagen;
     private javax.swing.JTextField jTextFieldMonitor;
     private javax.swing.JTextField jTextFieldSala;
