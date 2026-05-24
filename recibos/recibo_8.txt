@@ -1,0 +1,26 @@
+============================================
+          RECIBO - JAVAFIT GIMNASIO         
+============================================
+Número de reserva : #8
+Fecha de emisión   : 24/05/2026 23:08
+--------------------------------------------
+SOCIO
+  Nombre  : Debug
+  Correo  : 
+  Tipo    : VIP
+--------------------------------------------
+ACTIVIDAD
+  Título  : clase especial2
+  Tipo    : Musculación
+  Monitor : simga 2
+  Sala    : Sala D
+  Horario : [Jueves, Viernes], 12:15 - 10:00
+  Fecha   : 28/05/2026
+  Precio base: 22,00€
+  Descuento VIP (10%): -2,20€
+--------------------------------------------
+  TOTAL COBRADO: 19,80€
+  Tarjeta: **** **** **** 
+============================================
+          Gracias por elegirnos             
+============================================

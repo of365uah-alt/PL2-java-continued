@@ -76,7 +76,9 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jLabel10" min="-2" pref="100" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="jTextFieldImagen" max="32767" attributes="0"/>
+                          <Component id="jTextFieldImagen" min="-2" pref="251" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="jButtonExaminarImagen" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
@@ -185,6 +187,7 @@
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel10" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
                   <Component id="jTextFieldImagen" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jButtonExaminarImagen" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jCheckBoxActividadEspecial" min="-2" max="-2" attributes="0"/>
@@ -279,7 +282,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel10">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Imagen (Ruta):"/>
+        <Property name="text" type="java.lang.String" value="Imagen (Opcional):"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="jTextFieldTitulo">
@@ -485,6 +488,14 @@
           <Format format="&#xa4;#,##0.00" subtype="-1" type="4"/>
         </Property>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="jButtonExaminarImagen">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Examinar"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButtonExaminarImagenActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

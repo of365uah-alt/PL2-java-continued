@@ -59,7 +59,7 @@ public class UserInterface extends javax.swing.JFrame {
     public UserInterface(Socio usuario) throws IOException, ClassNotFoundException {
         gestor.cargarDatos();
         initComponents();
-        this.setSize(850, 650);
+        this.setSize(860, 600);
         this.usuarioActual = usuario;
         this.CorreoUsuario = CorreoUsuario;
         this.setTitle(CorreoUsuario + " - Javafit Interfaz de Usuario");
@@ -97,6 +97,9 @@ public class UserInterface extends javax.swing.JFrame {
         // 2. Le asignamos el modelo ya configurado a la tabla visual
         this.jTable1.setModel(modelTabla);
         
+        
+        
+        
         // 3. Rellenamos la tabla con los datos reales usando tu Gestor
         actualizarTabla(gestor.getActividades());
         
@@ -117,6 +120,25 @@ public class UserInterface extends javax.swing.JFrame {
         this.jTableReservas.getColumnModel().getColumn(0).setMinWidth(30);
         this.jTableReservas.getColumnModel().getColumn(0).setMaxWidth(50);
         this.jTableReservas.getColumnModel().getColumn(0).setPreferredWidth(40);
+        //Tabla
+        this.jTable1.setModel(modelTabla);
+        actualizarTabla(gestor.getActividades());
+        
+        // --- NUEVO: Configuración de la etiqueta dinámica de Descripción ---
+        
+        // 1. La ocultamos nada más abrir la ventana
+        jLabelDescrpción.setVisible(false);
+        jLabelImagenVisual.setVisible(false);
+        // 2. Le añadimos un "escuchador" a la tabla para detectar clics en las filas
+        jTable1.getSelectionModel().addListSelectionListener(e -> {
+            // valueIsAdjusting evita que el evento se dispare dos veces por un solo clic
+            if (!e.getValueIsAdjusting()) {
+                actualizarDetallesActividad();
+            }
+        });
+        // -------------------------------------------------------------------
+        
+        // ... (el resto de tu constructor sigue igual)
     }
     void actualizarTabla(List<Actividad> lista) {
         modelTabla.setRowCount(0);
@@ -160,6 +182,59 @@ public class UserInterface extends javax.swing.JFrame {
             });
         }
     }
+    private void actualizarDetallesActividad() {
+        int filaSeleccionada = jTable1.getSelectedRow();
+        
+        // Si no hay ninguna fila seleccionada, ocultamos todo y salimos
+        if (filaSeleccionada < 0) {
+            jLabelDescrpción.setVisible(false);
+            jLabelImagenVisual.setVisible(false); // Ocultamos la imagen
+            return;
+        }
+        
+        // Extraemos el ID de la columna 0
+        int id = (int) modelTabla.getValueAt(filaSeleccionada, 0);
+        
+        // Buscamos la actividad en el Gestor
+        Actividad act = gestor.getActividades().stream()
+                .filter(a -> a.getId() == id).findFirst().orElse(null);
+                
+        if (act != null) {
+            // --- 1. GESTIÓN DE LA DESCRIPCIÓN (Especiales) ---
+            if (act.esEspecial()) {
+                ActividadEspecial ae = (ActividadEspecial) act;
+                jLabelDescrpción.setText("<html><b>Descripción:</b> " + ae.getDescripcion() + "</html>");
+                jLabelDescrpción.setVisible(true);
+            } else {
+                jLabelDescrpción.setVisible(false);
+            }
+            
+            // --- 2. GESTIÓN DE LA IMAGEN ---
+            String ruta = act.getRutaImagen();
+            if (ruta != null && !ruta.isBlank()) {
+                try {
+                    // Cargamos el archivo de imagen original
+                    javax.swing.ImageIcon iconoOriginal = new javax.swing.ImageIcon(ruta);
+                    
+                    // Escalamos la imagen para que quepa en un recuadro de 150x150 píxeles (puedes ajustar estos números)
+                    // SCALE_SMOOTH hace que la imagen no se vea pixelada al encogerla
+                    java.awt.Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(150, 150, java.awt.Image.SCALE_SMOOTH);
+                    
+                    // Ponemos la imagen escalada en el JLabel y lo hacemos visible
+                    jLabelImagenVisual.setIcon(new javax.swing.ImageIcon(imagenEscalada));
+                    jLabelImagenVisual.setVisible(true);
+                    
+                } catch (Exception e) {
+                    // Si el archivo se borró del ordenador o hay un error, lo ocultamos
+                    jLabelImagenVisual.setIcon(null);
+                    jLabelImagenVisual.setVisible(false);
+                }
+            } else {
+                // Si la actividad no tiene ruta de imagen, ocultamos el JLabel
+                jLabelImagenVisual.setIcon(null);
+                jLabelImagenVisual.setVisible(false);
+            }
+        }}
     private void cargarDatosPerfil() {
         jTextFieldCorreo.setText(usuarioActual.getCorreo());
         jTextFieldCorreo.setEditable(false); // Opcional: Bloqueamos el correo para que no se pueda cambiar, suele ser la clave primaria
@@ -198,6 +273,8 @@ public class UserInterface extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jButtonReservar = new javax.swing.JButton();
+        jLabelDescrpción = new javax.swing.JLabel();
+        jLabelImagenVisual = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -298,7 +375,7 @@ public class UserInterface extends javax.swing.JFrame {
                 .addComponent(BuscarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(LimpiarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(169, Short.MAX_VALUE))
+                .addContainerGap(186, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -363,25 +440,37 @@ public class UserInterface extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 799, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButtonReservar)
-                .addGap(21, 21, 21))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(jLabelDescrpción, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabelImagenVisual, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButtonReservar)
+                        .addGap(37, 37, 37))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(jLabelImagenVisual, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(jLabelDescrpción, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(jButtonReservar)
-                .addGap(0, 62, Short.MAX_VALUE))
+                .addGap(38, 38, 38))
         );
 
         jTabbedPane1.addTab("Actividades", jPanel1);
@@ -414,7 +503,7 @@ public class UserInterface extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel7)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 799, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(56, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButtonCancelarReserva)
@@ -498,7 +587,7 @@ public class UserInterface extends javax.swing.JFrame {
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jLabel18, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE))
+                                    .addComponent(jLabel18, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE))
                                 .addGap(39, 39, 39)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jTextFieldNuevaContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -587,9 +676,9 @@ public class UserInterface extends javax.swing.JFrame {
                 .addComponent(jLabelUsuario)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap(89, Short.MAX_VALUE)
+                .addContainerGap(69, Short.MAX_VALUE)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(26, 26, 26))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -961,6 +1050,8 @@ public class UserInterface extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabelDescrpción;
+    private javax.swing.JLabel jLabelImagenVisual;
     private javax.swing.JLabel jLabelMiPerfil;
     private javax.swing.JLabel jLabelUsuario;
     private javax.swing.JPanel jPanel1;

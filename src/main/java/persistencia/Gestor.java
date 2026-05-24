@@ -8,6 +8,7 @@ import clases_pl2.Socio;
 import clases_pl2.ActividadEspecial;
 import clases_pl2.Administrador;
 import clases_pl2.Actividad;
+import clases_pl2.Recibo;
 import java.io.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -37,7 +38,8 @@ public class Gestor {
     private List<Reserva> reservas = new ArrayList<>();
     private int nextActividadId = 1;
     private int nextReservaId = 1;
-    
+        private static final String DIR_RECIBOS = "recibos";
+
     
     
     //Debug!
@@ -222,7 +224,12 @@ public class Gestor {
     
     
     //Generar Recibo!
-    
+    try {
+            Recibo.generarRecibo(reserva, DIR_RECIBOS);
+        } catch (IOException e) {
+            // No es crítico, la reserva se registra igualmente
+        }
+
     
     
     

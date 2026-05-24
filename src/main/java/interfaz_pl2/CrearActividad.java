@@ -15,7 +15,9 @@ import java.time.temporal.ChronoUnit;
 import persistencia.Gestor;
 import java.util.ArrayList;
 import clases_pl2.Sala;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -100,6 +102,7 @@ public class CrearActividad extends javax.swing.JDialog {
         jLabelDescripcion = new javax.swing.JLabel();
         jTextFieldDescrpcion = new javax.swing.JTextField();
         jFormattedTextFieldPrecio = new javax.swing.JFormattedTextField();
+        jButtonExaminarImagen = new javax.swing.JButton();
 
         jLabel2.setText("jLabel2");
 
@@ -139,7 +142,7 @@ public class CrearActividad extends javax.swing.JDialog {
 
         jLabel9.setText("Hora fin:");
 
-        jLabel10.setText("Imagen (Ruta):");
+        jLabel10.setText("Imagen (Opcional):");
 
         jTextFieldTitulo.addActionListener(this::jTextFieldTituloActionPerformed);
 
@@ -209,6 +212,9 @@ public class CrearActividad extends javax.swing.JDialog {
 
         jFormattedTextFieldPrecio.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("¤#,##0.00"))));
 
+        jButtonExaminarImagen.setText("Examinar");
+        jButtonExaminarImagen.addActionListener(this::jButtonExaminarImagenActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -254,7 +260,9 @@ public class CrearActividad extends javax.swing.JDialog {
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(18, 18, 18)
-                            .addComponent(jTextFieldImagen))
+                            .addComponent(jTextFieldImagen, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(jButtonExaminarImagen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGroup(layout.createSequentialGroup()
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(layout.createSequentialGroup()
@@ -340,7 +348,8 @@ public class CrearActividad extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextFieldImagen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldImagen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonExaminarImagen))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBoxActividadEspecial)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -484,6 +493,14 @@ public class CrearActividad extends javax.swing.JDialog {
                 actividad = new Actividad(0, titulo, tipoactividad, sala, horario, monitor);
             }
 
+            // --- NUEVO: Guardar la ruta de la imagen si el usuario la ha seleccionado ---
+            String rutaImagen = jTextFieldImagen.getText().trim();
+            if (!rutaImagen.isEmpty()) {
+                actividad.setRutaImagen(rutaImagen);
+            }
+            // --------------------------------------------------------------------------
+
+            // Guardamos en el gestor
             // Guardamos en el gestor (funcionará igual para ambas porque ActividadEspecial hereda de Actividad)
             gestor.agregarActividad(actividad);
             gestor.guardarDatos();
@@ -515,6 +532,36 @@ public class CrearActividad extends javax.swing.JDialog {
         // Reajustamos la ventana para que se adapte al nuevo contenido
         this.pack();        // TODO add your handling code here:
     }//GEN-LAST:event_jCheckBoxActividadEspecialActionPerformed
+
+    private void jButtonExaminarImagenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExaminarImagenActionPerformed
+        // 1. Crear el objeto JFileChooser (el buscador de archivos)
+        JFileChooser selectorArchivos = new JFileChooser();
+        
+        // Opcional: Le decimos que empiece buscando en la carpeta del usuario
+        selectorArchivos.setCurrentDirectory(new java.io.File(System.getProperty("user.home")));
+        
+        // 2. Crear un filtro para que el usuario solo pueda ver y elegir imágenes
+        FileNameExtensionFilter filtroImagen = new FileNameExtensionFilter(
+                "Archivos de Imagen (*.jpg, *.jpeg, *.png)", "jpg", "jpeg", "png");
+        
+        // Aplicamos el filtro al selector
+        selectorArchivos.setFileFilter(filtroImagen);
+        
+        // 3. Abrir la ventana de diálogo y guardar lo que el usuario decide
+        int resultado = selectorArchivos.showOpenDialog(this);
+        
+        // 4. Si el usuario le dio al botón "Abrir" (o "Aceptar")
+        if (resultado == JFileChooser.APPROVE_OPTION) {
+            // Obtenemos el archivo que seleccionó
+            java.io.File archivoSeleccionado = selectorArchivos.getSelectedFile();
+            
+            // Obtenemos la ruta absoluta (ej: C:\Usuarios\David\Imágenes\yoga.png)
+            String ruta = archivoSeleccionado.getAbsolutePath();
+            
+            // La escribimos en el campo de texto para que el usuario la vea y el programa la guarde
+            jTextFieldImagen.setText(ruta);
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonExaminarImagenActionPerformed
 
     /**
      * @param args the command line arguments
@@ -556,6 +603,7 @@ public class CrearActividad extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAplicar;
     private javax.swing.JButton jButtonCancelar;
+    private javax.swing.JButton jButtonExaminarImagen;
     private javax.swing.JCheckBox jCheckBoxActividadEspecial;
     private javax.swing.JCheckBox jCheckBoxDomingo;
     private javax.swing.JCheckBox jCheckBoxJueves;

@@ -17,6 +17,7 @@ public class Actividad implements Serializable {
     private Sala sala; //adelante
     private Horario horario;
     private String monitor;
+    private String rutaImagen; //Opcional, no estará en el constructor
 
     public Actividad(int id, String titulo, TipoActividad tipo, Sala sala, Horario horario, String monitor) {
         this.id = id;
@@ -26,12 +27,33 @@ public class Actividad implements Serializable {
         this.horario = horario;
         this.monitor = monitor;
     }
+    
+
+    /**
+     * Get the value of rutaImagen
+     *
+     * @return the value of rutaImagen
+     */
+    public String getRutaImagen() {
+        return rutaImagen;
+    }
+
+    /**
+     * Set the value of rutaImagen
+     *
+     * @param rutaImagen new value of rutaImagen
+     */
+    public void setRutaImagen(String rutaImagen) {
+        this.rutaImagen = rutaImagen;
+    }
+
 
     /**
      * Get the value of monitor
      *
      * @return the value of monitor
      */
+    
     public String getMonitor() {
         return monitor;
     }

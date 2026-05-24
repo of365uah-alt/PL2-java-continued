@@ -1,0 +1,24 @@
+============================================
+          RECIBO - JAVAFIT GIMNASIO         
+============================================
+Número de reserva : #7
+Fecha de emisión   : 24/05/2026 23:05
+--------------------------------------------
+SOCIO
+  Nombre  : Debug
+  Correo  : 
+  Tipo    : VIP
+--------------------------------------------
+ACTIVIDAD
+  Título  : Clase de java
+  Tipo    : Yoga
+  Monitor : yo
+  Sala    : Sala AB
+  Horario : [Lunes, Martes, Viernes, Sábado], 10:00 - 06:30
+  Fecha   : 26/05/2026
+--------------------------------------------
+  TOTAL COBRADO: 0,00€
+  Tarjeta: **** **** **** 
+============================================
+          Gracias por elegirnos             
+============================================

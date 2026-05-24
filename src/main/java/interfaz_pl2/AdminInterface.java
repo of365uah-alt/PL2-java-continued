@@ -110,15 +110,31 @@ public class AdminInterface extends javax.swing.JFrame {
         modelTablaSocios.setColumnIdentifiers(columnasSocios);
         this.jTableSocios.setModel(modelTablaSocios);
         
+        //Tabla
+        this.jTable1.setModel(modelTabla);
+        actualizarTabla(gestor.getActividades());
+        
+        // --- NUEVO: Configuración de la etiqueta dinámica de Descripción ---
+        
+        // 1. La ocultamos nada más abrir la ventana
+        jLabelDescrpción.setVisible(false);
+        jLabelImagenVisual.setVisible(false);
+        this.pack();
+        // 2. Le añadimos un "escuchador" a la tabla para detectar clics en las filas
+        jTable1.getSelectionModel().addListSelectionListener(e -> {
+            // valueIsAdjusting evita que el evento se dispare dos veces por un solo clic
+            if (!e.getValueIsAdjusting()) {
+                actualizarDetallesActividad();
+            }
+        });
+        // -------------------------------------------------------------------
+        
+        
+        
+        
         // 3. Cargar todos los socios al abrir la ventana
         // Asumimos que gestor.getSocios() devuelve la List<Socio> completa
         actualizarTablaSocios(gestor.getSocios());
-        DefaultTableModel modelTablaReservas = new DefaultTableModel(0, 6) {
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            return false; // Bloquea la edición manual
-        }
-    };
      
         // --- CONFIGURACIÓN PESTAÑA RESERVAS ---
         
@@ -164,19 +180,88 @@ public class AdminInterface extends javax.swing.JFrame {
         modelTablaReservas.setRowCount(0); // Limpiamos la tabla
         
         for (clases_pl2.Reserva r : lista) {
-            String costeFormateado = String.format("%.2f€", r.getCoste());
-            
-            // Añadimos: ID, Nombre del Socio, Título Actividad, Tipo, Fecha, Coste
-            modelTablaReservas.addRow(new Object[]{
-                r.getId(),
-                r.getSocio().getNombre(),
-                r.getActividad().getTitulo(),
-                r.getActividad().getTipo().getDescripcion(),
-                r.getFecha().toString(),
-                costeFormateado
-            });
+            try {
+                String costeFormateado = String.format("%.2f€", r.getCoste());
+                
+                // Protecciones contra NullPointerException usando operadores ternarios
+                String nombreSocio = (r.getSocio() != null) ? r.getSocio().getNombre() : "Socio Borrado";
+                String tituloAct = (r.getActividad() != null) ? r.getActividad().getTitulo() : "Actividad Borrada";
+                String tipoAct = (r.getActividad() != null && r.getActividad().getTipo() != null) 
+                                 ? r.getActividad().getTipo().getDescripcion() 
+                                 : "Sin tipo";
+                String fechaStr = (r.getFecha() != null) ? r.getFecha().toString() : "Sin fecha";
+
+                // Añadimos la fila protegida a la tabla
+                modelTablaReservas.addRow(new Object[]{
+                    r.getId(),
+                    nombreSocio,
+                    tituloAct,
+                    tipoAct,
+                    fechaStr,
+                    costeFormateado
+                });
+                
+            } catch (Exception e) {
+                // Si la fila falla por cualquier otro motivo, la saltamos pero no rompemos el resto de la tabla
+                System.out.println("Error al cargar la reserva ID " + r.getId() + ": " + e.getMessage());
+            }
         }
+    
     }
+    private void actualizarDetallesActividad() {
+        int filaSeleccionada = jTable1.getSelectedRow();
+        
+        // Si no hay ninguna fila seleccionada, ocultamos todo y salimos
+        if (filaSeleccionada < 0) {
+            jLabelDescrpción.setVisible(false);
+            jLabelImagenVisual.setVisible(false); // Ocultamos la imagen
+            return;
+        }
+        
+        // Extraemos el ID de la columna 0
+        int id = (int) modelTabla.getValueAt(filaSeleccionada, 0);
+        
+        // Buscamos la actividad en el Gestor
+        Actividad act = gestor.getActividades().stream()
+                .filter(a -> a.getId() == id).findFirst().orElse(null);
+                
+        if (act != null) {
+            // --- 1. GESTIÓN DE LA DESCRIPCIÓN (Especiales) ---
+            if (act.esEspecial()) {
+                ActividadEspecial ae = (ActividadEspecial) act;
+                jLabelDescrpción.setText("<html><b>Descripción:</b> " + ae.getDescripcion() + "</html>");
+                jLabelDescrpción.setVisible(true);
+            } else {
+                jLabelDescrpción.setVisible(false);
+            }
+            
+            // --- 2. GESTIÓN DE LA IMAGEN ---
+            String ruta = act.getRutaImagen();
+            if (ruta != null && !ruta.isBlank()) {
+                try {
+                    // Cargamos el archivo de imagen original
+                    javax.swing.ImageIcon iconoOriginal = new javax.swing.ImageIcon(ruta);
+                    
+                    // Escalamos la imagen para que quepa en un recuadro de 150x150 píxeles (puedes ajustar estos números)
+                    // SCALE_SMOOTH hace que la imagen no se vea pixelada al encogerla
+                    java.awt.Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(150, 150, java.awt.Image.SCALE_SMOOTH);
+                    
+                    // Ponemos la imagen escalada en el JLabel y lo hacemos visible
+                    jLabelImagenVisual.setIcon(new javax.swing.ImageIcon(imagenEscalada));
+                    jLabelImagenVisual.setVisible(true);
+                    
+                } catch (Exception e) {
+                    // Si el archivo se borró del ordenador o hay un error, lo ocultamos
+                    jLabelImagenVisual.setIcon(null);
+                    jLabelImagenVisual.setVisible(false);
+                }
+            } else {
+                // Si la actividad no tiene ruta de imagen, ocultamos el JLabel
+                jLabelImagenVisual.setIcon(null);
+                jLabelImagenVisual.setVisible(false);
+            }
+            this.pack();
+        }}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -205,6 +290,8 @@ public class AdminInterface extends javax.swing.JFrame {
         jButtonEliminar = new javax.swing.JButton();
         jButtonEditar = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jLabelDescrpción = new javax.swing.JLabel();
+        jLabelImagenVisual = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
@@ -293,7 +380,7 @@ public class AdminInterface extends javax.swing.JFrame {
                 .addComponent(LimpiarBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(LimpiarBoton1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(168, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -371,15 +458,20 @@ public class AdminInterface extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabelDescrpción, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton4)
                         .addGap(18, 18, 18)
                         .addComponent(jButtonEditar)
                         .addGap(18, 18, 18)
-                        .addComponent(jButtonEliminar)))
+                        .addComponent(jButtonEliminar))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabelImagenVisual, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(8, 8, 8)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -387,13 +479,17 @@ public class AdminInterface extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelImagenVisual, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jLabelDescrpción, javax.swing.GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonEliminar)
                     .addComponent(jButtonEditar)
                     .addComponent(jButton4))
-                .addGap(0, 81, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Actividades", jPanel1);
@@ -445,7 +541,7 @@ public class AdminInterface extends javax.swing.JFrame {
                                 .addComponent(jTextFieldNombreOCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(jButtonBuscarSocios)
-                                .addGap(0, 239, Short.MAX_VALUE))
+                                .addGap(0, 379, Short.MAX_VALUE))
                             .addComponent(jScrollPane2))))
                 .addGap(29, 29, 29))
         );
@@ -510,7 +606,7 @@ public class AdminInterface extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 792, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 932, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -546,20 +642,19 @@ public class AdminInterface extends javax.swing.JFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelUsuario)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(156, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addContainerGap(89, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(29, 29, 29))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelUsuario)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(12, 12, 12)
+                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -838,6 +933,8 @@ public class AdminInterface extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabelDescrpción;
+    private javax.swing.JLabel jLabelImagenVisual;
     private javax.swing.JLabel jLabelUsuario;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
