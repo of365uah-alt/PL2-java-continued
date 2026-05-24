@@ -3,8 +3,8 @@ package clases_pl2;
 import java.io.Serializable;
 
 /**
- *
- * @author david
+ * Clase abstractica, De la que heredan socio y admin
+ * @author david, samuel
  */
 public abstract class Usuario implements Serializable {
     private String correo;

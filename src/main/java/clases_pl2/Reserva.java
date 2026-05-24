@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package clases_pl2;
 
 import java.io.Serializable;
@@ -9,10 +5,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
- *
- * @author david
+ * Clase reserva, para las reservas de actividades por usuarios. 
+ * @author david, Samuel
  */
-public class Reserva implements Comparable<Reserva>, Serializable {
+public class Reserva implements Comparable<Reserva>, Serializable { //Comparable<Reserva> es una interfaz de comparación
     private static final long serialVersionUID = 1L; //Recomendado
     
     private int id;

@@ -3,8 +3,8 @@ package clases_pl2;
 import java.io.Serializable;
 
 /**
- *
- * @author david
+ * Enumeración de tipos de actividades (Solo hay 4)
+ * @author david, samuel
  */
 //Enumeración de actividades
 public enum TipoActividad implements Serializable{

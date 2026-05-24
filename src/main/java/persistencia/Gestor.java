@@ -108,6 +108,26 @@ public class Gestor {
         a.setId(nextActividadId++);
         actividades.add(a);
     }
+    public void actualizarActividad(int idOriginal, Actividad nuevaActividad) {
+    for (int i = 0; i < actividades.size(); i++) {
+        Actividad original = actividades.get(i);
+        if (original.getId() == idOriginal) {
+            // Preservar el ID original
+            nuevaActividad.setId(idOriginal);
+            
+            // Reemplazar la actividad vieja por la nueva en el catálogo
+            actividades.set(i, nuevaActividad);
+            
+            // Actualizar la referencia de la actividad en todas las reservas existentes
+            for (Reserva r : reservas) {
+                if (r.getActividad().getId() == idOriginal) {
+                    r.setActividad(nuevaActividad);
+                }
+            }
+            break;
+        }
+    }
+}
     public boolean eliminarActividad(int id) { // Optional 
         Optional<Actividad> act = actividades.stream().filter(a -> a.getId() == id).findFirst();
         if (act.isPresent()) {
@@ -319,4 +339,5 @@ public class Gestor {
             }
         }
     }
+    
 }

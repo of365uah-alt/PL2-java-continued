@@ -1,16 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package interfaz_pl2;
 import clases_pl2.DiaSemana;
 import clases_pl2.Socio;
 import clases_pl2.ActividadEspecial;
 import clases_pl2.Actividad;
 import clases_pl2.Administrador;
-import java.time.LocalTime;
 import clases_pl2.TipoActividad;
-import java.awt.BorderLayout;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -18,38 +12,20 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import persistencia.EstadoAplicacion;
 import persistencia.Gestor;
 
 /**
  *
- * @author david
+ * @author david, Samuel
  */
 public class AdminInterface extends javax.swing.JFrame {
-    /*debug
-    
-    Sala sala1 = new Sala("sala1", 20);
-    Horario horario1 = new Horario(List.of(DiaSemana.L), LocalTime.of(18, 0), LocalTime.of(20,0));
-    Actividad actividad1 = new Actividad(1, "Clase yoga", TipoActividad.YOGA, sala1, horario1, "monitor67");
-    ArrayList<Actividad> actividades = new ArrayList<Actividad>();
-/*debug
-    
-    Sala sala1 = new Sala("sala1", 20);
-    Horario horario1 = new Horario(List.of(DiaSemana.L), LocalTime.of(18, 0), LocalTime.of(20,0));
-    Actividad actividad1 = new Actividad(1, "Clase yoga", TipoActividad.YOGA, sala1, horario1, "monitor67");
-    ArrayList<Actividad> actividades = new ArrayList<Actividad>();
-
-*/ //debug
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AdminInterface.class.getName());
     private String CorreoUsuario;
     DefaultTableModel modelTabla = new DefaultTableModel(0, 8);
     
     private final Gestor gestor = Gestor.getInstancia();
-    
+    //Modelos de tablas
     DefaultTableModel modelTablaSocios = new DefaultTableModel(0, 5) {
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -62,21 +38,11 @@ public class AdminInterface extends javax.swing.JFrame {
             return false; // Bloquea la edición manual
         }
     };
-    
-    
-    
-
-    /**
-     * Creates new form UserInterface
-     */
     public AdminInterface(Administrador usuario) throws IOException, ClassNotFoundException {
         gestor.cargarDatos();
 
-        //debug ^
         initComponents();
         this.setTitle(CorreoUsuario + " - Javafit Interfaz de Usuario");
-        //Verificador de String
-        monitorFormattedField.setInputVerifier(new StringVerifier());
         
         //Dia ComboBox
         DiaComboBox.removeAllItems();
@@ -105,7 +71,7 @@ public class AdminInterface extends javax.swing.JFrame {
         TipoComboBoxTipoUsuario.addItem("VIP");
         TipoComboBoxTipoUsuario.addItem("Básico");
         
-        // 2. Configurar las columnas de la tabla de socios
+        //Configurar las columnas de la tabla de socios
         String[] columnasSocios = {"Nombre", "Correo", "Teléfono", "Tipo", "Cuota Mensual"};
         modelTablaSocios.setColumnIdentifiers(columnasSocios);
         this.jTableSocios.setModel(modelTablaSocios);
@@ -114,41 +80,39 @@ public class AdminInterface extends javax.swing.JFrame {
         this.jTable1.setModel(modelTabla);
         actualizarTabla(gestor.getActividades());
         
-        // --- NUEVO: Configuración de la etiqueta dinámica de Descripción ---
         
-        // 1. La ocultamos nada más abrir la ventana
+        //Etiqueta de descripción (Visibilidad) + imagen
+        
+        // La ocultamos nada más abrir la ventana
         jLabelDescrpción.setVisible(false);
         jLabelImagenVisual.setVisible(false);
         this.pack();
-        // 2. Le añadimos un "escuchador" a la tabla para detectar clics en las filas
+        //añadimos un "escuchador" a la tabla para detectar clics en las filas
+        //Los escuchadrores me los enseñó un compañero 
         jTable1.getSelectionModel().addListSelectionListener(e -> {
             // valueIsAdjusting evita que el evento se dispare dos veces por un solo clic
             if (!e.getValueIsAdjusting()) {
                 actualizarDetallesActividad();
             }
         });
-        // -------------------------------------------------------------------
-        
-        
-        
-        
-        // 3. Cargar todos los socios al abrir la ventana
+        // Cargar todos los socios al abrir la ventana
         // Asumimos que gestor.getSocios() devuelve la List<Socio> completa
         actualizarTablaSocios(gestor.getSocios());
      
-        // --- CONFIGURACIÓN PESTAÑA RESERVAS ---
+        // ---> Reservas
         
-        // 1. Configurar las columnas
+        //Configurar tabla reservas
         String[] columnasReservas = {"ID", "Socio", "Actividad", "Tipo", "Fecha", "Coste"};
         modelTablaReservas.setColumnIdentifiers(columnasReservas);
         this.jTableReservas.setModel(modelTablaReservas);
         
-        // 2. Cargar todas las reservas al iniciar (usando el método del Gestor)
+        //cargar las reservas
         actualizarTablaReservas(gestor.getTodasReservas());
         
-        // 3. Ajustes visuales (opcional): Hacer la columna ID más pequeña
+        // Ajustes visuales con la ID
         this.jTableReservas.getColumnModel().getColumn(0).setMaxWidth(50);
     }
+    //Lógica de actualización de tabla (Actividades)
     void actualizarTabla(List<Actividad> lista) {
         modelTabla.setRowCount(0);
         for (Actividad a : lista) {
@@ -162,6 +126,8 @@ public class AdminInterface extends javax.swing.JFrame {
            
         }
     }
+        //Lógica de actualización de tabla (Socios)
+
     void actualizarTablaSocios(List<Socio> lista) {
         modelTablaSocios.setRowCount(0); // Limpiar datos antiguos
         
@@ -176,22 +142,20 @@ public class AdminInterface extends javax.swing.JFrame {
                 s.getNombre(), s.getCorreo(), s.getTelefono(), tipoUsuario, cuota
             });
         }}
+        //Lógica de actualización de tabla (Reservas)
+
     void actualizarTablaReservas(List<clases_pl2.Reserva> lista) {
-        modelTablaReservas.setRowCount(0); // Limpiamos la tabla
+        modelTablaReservas.setRowCount(0); 
         
         for (clases_pl2.Reserva r : lista) {
             try {
                 String costeFormateado = String.format("%.2f€", r.getCoste());
-                
-                // Protecciones contra NullPointerException usando operadores ternarios
                 String nombreSocio = (r.getSocio() != null) ? r.getSocio().getNombre() : "Socio Borrado";
                 String tituloAct = (r.getActividad() != null) ? r.getActividad().getTitulo() : "Actividad Borrada";
                 String tipoAct = (r.getActividad() != null && r.getActividad().getTipo() != null) 
                                  ? r.getActividad().getTipo().getDescripcion() 
                                  : "Sin tipo";
                 String fechaStr = (r.getFecha() != null) ? r.getFecha().toString() : "Sin fecha";
-
-                // Añadimos la fila protegida a la tabla
                 modelTablaReservas.addRow(new Object[]{
                     r.getId(),
                     nombreSocio,
@@ -202,15 +166,14 @@ public class AdminInterface extends javax.swing.JFrame {
                 });
                 
             } catch (Exception e) {
-                // Si la fila falla por cualquier otro motivo, la saltamos pero no rompemos el resto de la tabla
                 System.out.println("Error al cargar la reserva ID " + r.getId() + ": " + e.getMessage());
             }
         }
     
     }
+    //Lógica de refresco de tabla actividades
     private void actualizarDetallesActividad() {
         int filaSeleccionada = jTable1.getSelectedRow();
-        
         // Si no hay ninguna fila seleccionada, ocultamos todo y salimos
         if (filaSeleccionada < 0) {
             jLabelDescrpción.setVisible(false);
@@ -226,7 +189,7 @@ public class AdminInterface extends javax.swing.JFrame {
                 .filter(a -> a.getId() == id).findFirst().orElse(null);
                 
         if (act != null) {
-            // --- 1. GESTIÓN DE LA DESCRIPCIÓN (Especiales) ---
+            // GESTIÓN DE LA DESCRIPCIÓN
             if (act.esEspecial()) {
                 ActividadEspecial ae = (ActividadEspecial) act;
                 jLabelDescrpción.setText("<html><b>Descripción:</b> " + ae.getDescripcion() + "</html>");
@@ -235,28 +198,26 @@ public class AdminInterface extends javax.swing.JFrame {
                 jLabelDescrpción.setVisible(false);
             }
             
-            // --- 2. GESTIÓN DE LA IMAGEN ---
+            //GESTIÓN DE LA IMAGEN
             String ruta = act.getRutaImagen();
             if (ruta != null && !ruta.isBlank()) {
                 try {
-                    // Cargamos el archivo de imagen original
                     javax.swing.ImageIcon iconoOriginal = new javax.swing.ImageIcon(ruta);
                     
-                    // Escalamos la imagen para que quepa en un recuadro de 150x150 píxeles (puedes ajustar estos números)
                     // SCALE_SMOOTH hace que la imagen no se vea pixelada al encogerla
-                    java.awt.Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(150, 150, java.awt.Image.SCALE_SMOOTH);
-                    
+                    java.awt.Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(150, 150, java.awt.Image.SCALE_SMOOTH);                    
                     // Ponemos la imagen escalada en el JLabel y lo hacemos visible
                     jLabelImagenVisual.setIcon(new javax.swing.ImageIcon(imagenEscalada));
                     jLabelImagenVisual.setVisible(true);
                     
                 } catch (Exception e) {
                     // Si el archivo se borró del ordenador o hay un error, lo ocultamos
+                    // !!!Esto es importante por si mando actividades con imagénes, ya que tu ordernador no las tiene
                     jLabelImagenVisual.setIcon(null);
                     jLabelImagenVisual.setVisible(false);
                 }
             } else {
-                // Si la actividad no tiene ruta de imagen, ocultamos el JLabel
+                // Si la actividad no tiene ruta de imagen, ocultamos el JLabel (para empaquetar)
                 jLabelImagenVisual.setIcon(null);
                 jLabelImagenVisual.setVisible(false);
             }
@@ -687,6 +648,7 @@ public class AdminInterface extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BuscarBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BuscarBotonActionPerformed
+        //Lógica de filtrado de actividades
         String tipoStr = (String) TipoComboBox.getSelectedItem();
         String diaStr = (String) DiaComboBox.getSelectedItem();
         String monitor = monitorFormattedField.getText().trim();
@@ -716,15 +678,16 @@ public class AdminInterface extends javax.swing.JFrame {
         }
         List<Actividad> actividadesFiltradas = gestor.buscarActividades(tipo, monitor, dia);
 
-        actualizarTabla(actividadesFiltradas);        // TODO add your handling code here:
+        actualizarTabla(actividadesFiltradas);
     }//GEN-LAST:event_BuscarBotonActionPerformed
 
     private void LimpiarBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LimpiarBotonActionPerformed
+        //Botor de limpiar filtros (También actualiza)
         TipoComboBox.setSelectedItem("Todos");
         DiaComboBox.setSelectedItem("Todos");
         monitorFormattedField.setText("");
 
-        actualizarTabla(gestor.getActividades());        // TODO add your handling code here:
+        actualizarTabla(gestor.getActividades());
     }//GEN-LAST:event_LimpiarBotonActionPerformed
 
     private void DiaComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DiaComboBoxActionPerformed
@@ -732,7 +695,7 @@ public class AdminInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_DiaComboBoxActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+       //Cerrar Sesión
        InicioSesion InicioSesion = new InicioSesion();
        InicioSesion.setVisible(true);
        InicioSesion.setLocationRelativeTo(null); //Centrar
@@ -740,6 +703,7 @@ public class AdminInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        //Crear Actividad (Instanciar nueva interfaz)
         CrearActividad crearactividad = new CrearActividad(this, rootPaneCheckingEnabled);
         crearactividad.setLocationRelativeTo(null);
         crearactividad.setVisible(true);
@@ -751,12 +715,14 @@ public class AdminInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void LimpiarBoton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LimpiarBoton1ActionPerformed
-        actualizarTabla(gestor.getActividades());// TODO add your handling code here:
+        actualizarTabla(gestor.getActividades());
     }//GEN-LAST:event_LimpiarBoton1ActionPerformed
 
     private void jButtonEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEliminarActionPerformed
+        //Lógica de eliminado de actividad
         int fila = jTable1.getSelectedRow();
         if (fila < 0) {
+            //Excepción de no seleccionar actividad
             JOptionPane.showMessageDialog(this, "Selecciona una actividad.");
             return; 
         }
@@ -773,27 +739,22 @@ public class AdminInterface extends javax.swing.JFrame {
                 System.getLogger(AdminInterface.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
             }
         }
-
-        
-
-
 // TODO add your handling code here:
     }//GEN-LAST:event_jButtonEliminarActionPerformed
 
     private void jButtonEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarActionPerformed
+        //Lógica de actualizar Actividad
         int fila = jTable1.getSelectedRow();
+            //Excepción de no seleccionar actividad
         if (fila < 0) { JOptionPane.showMessageDialog(this, "Selecciona una actividad."); return; }
         int id = (int) modelTabla.getValueAt(fila, 0);
         Actividad act = gestor.getActividades().stream() //stream
                 .filter(a -> a.getId() == id).findFirst().orElse(null);
         if (act == null) return;
-        //Añadir Código!
         ActualizarActividad actualizaractividad = new ActualizarActividad(this, true, act);
         actualizaractividad.setLocationRelativeTo(null);
         actualizaractividad.setVisible(true);
-        if (actualizaractividad.isOperacionExitosa()){
-             gestor.eliminarActividad(id);
-        }
+        
         actualizarTabla(gestor.getActividades());
         try { // Guardar Datos
             gestor.guardarDatos();
@@ -812,18 +773,18 @@ public class AdminInterface extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextFieldNombreOCorreoActionPerformed
 
     private void jButtonBuscarSociosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarSociosActionPerformed
+        //Lógica de búsqueda de socioss
         String tipoSeleccionado = (String) TipoComboBoxTipoUsuario.getSelectedItem();
         // Lo pasamos a minúsculas para que la búsqueda ignore mayúsculas/minúsculas
         String textoBusqueda = jTextFieldNombreOCorreo.getText().trim().toLowerCase(); 
 
-        // 2. Obtener la lista completa del Gestor y crear una nueva lista para los resultados
         List<Socio> todosLosSocios = gestor.getSocios();
         List<Socio> sociosFiltrados = new ArrayList<>();
 
-        // 3. Iterar sobre todos los socios y aplicar los filtros
+        //  lanzar sobre todos los socios y aplicar los filtros
         for (Socio s : todosLosSocios) {
             
-            // Filtro 1: Comprobar el Tipo (VIP / Básico / Todos)
+            //Comprobar el Tipo (VIP / Básico / Todos)
             boolean coincideTipo = true;
             if (tipoSeleccionado.equals("VIP") && !s.isEsVip()) {
                 coincideTipo = false; // Queremos VIP pero este no lo es
@@ -831,31 +792,28 @@ public class AdminInterface extends javax.swing.JFrame {
                 coincideTipo = false; // Queremos Básico pero este es VIP
             }
 
-            // Filtro 2: Comprobar Nombre o Correo
+            // Comprobar Nombre o Correo
             boolean coincideTexto = true;
             if (!textoBusqueda.isEmpty()) {
-                // Buscamos si el texto introducido está contenido en el nombre o el correo
                 boolean enNombre = s.getNombre().toLowerCase().contains(textoBusqueda);
                 boolean enCorreo = s.getCorreo().toLowerCase().contains(textoBusqueda);
                 
-                // Si no está ni en el nombre ni en el correo, descartamos este socio
                 if (!enNombre && !enCorreo) {
                     coincideTexto = false;
                 }
             }
 
-            // Si el socio cumple AMBOS filtros, lo añadimos a la lista final
             if (coincideTipo && coincideTexto) {
                 sociosFiltrados.add(s);
             }
         }
 
-        // 4. Actualizar la tabla visual con la lista ya filtrada
-        actualizarTablaSocios(sociosFiltrados);        // TODO add your handling code here:
+        // Actualizar la tabla visual con la lista ya filtrada
+        actualizarTablaSocios(sociosFiltrados);
     }//GEN-LAST:event_jButtonBuscarSociosActionPerformed
 
     private void jButtonBuscarReservasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBuscarReservasActionPerformed
-        // 1. Comprobamos si el administrador quiere filtrar por fecha
+        //Comprobar si está activo el filtro
         if (jCheckBoxFiltroPorFecha.isSelected()) {
             
             // Extraer la fecha del JSpinner y convertirla a LocalDate
@@ -864,40 +822,21 @@ public class AdminInterface extends javax.swing.JFrame {
                                       .atZone(ZoneId.systemDefault())
                                       .toLocalDate();
             
-            // Usamos el método que ya tienes en Gestor para obtener reservas desde esa fecha
+            // Mandamos la lógica al gestor
             List<clases_pl2.Reserva> reservasFiltradas = gestor.getReservasDesde(fechaLocal);
             
             // Actualizamos la tabla
             actualizarTablaReservas(reservasFiltradas);
             
         } else {
-            // 2. Si la casilla no está marcada, mostramos absolutamente todas las reservas
+            //Si la casilla no está marcada, mostramos todas las reservas
             actualizarTablaReservas(gestor.getTodasReservas());
-        }        // TODO add your handling code here:
+        }
     }//GEN-LAST:event_jButtonBuscarReservasActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        
-        /* Create and display the form */
+        //Método Main para hacer Debug
+        // La manera correcta es mediante iniciosesion.java
         java.awt.EventQueue.invokeLater(() -> {
             try {
                 new AdminInterface(new Administrador("admin@javafit.com", "1234")).setVisible(true);

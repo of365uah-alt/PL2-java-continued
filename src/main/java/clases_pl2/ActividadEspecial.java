@@ -4,10 +4,11 @@ import java.io.Serializable;
 
 /**
  *
- * @author david
+ * @author david, samuel
  */
+//Herencia de actividad. +Descrpción +Coste
 public class ActividadEspecial extends Actividad implements Serializable {
-    private static final long serialVersionUID = 1L; //Recomendado
+    private static final long serialVersionUID = 1L; //Recomendado para serialización
     private double Precio;
     private String descripcion;
 

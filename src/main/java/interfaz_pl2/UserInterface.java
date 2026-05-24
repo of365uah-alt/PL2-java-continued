@@ -65,7 +65,6 @@ public class UserInterface extends javax.swing.JFrame {
         this.setTitle(CorreoUsuario + " - Javafit Interfaz de Usuario");
         cargarDatosPerfil();
         //Verificador de String
-        monitorFormattedField.setInputVerifier(new StringVerifier());
         
         //Dia ComboBox
         DiaComboBox.removeAllItems();

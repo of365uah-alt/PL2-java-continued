@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
- */
 package interfaz_pl2;
 
 import clases_pl2.Actividad;
@@ -19,22 +15,22 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
- *
- * @author david
+ * Interfaz de actualización de actividades.
+ * Se puede acceder a esta actividad desde adminInterface
+ * @author david, Samuel
  */
 public class ActualizarActividad extends javax.swing.JDialog {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ActualizarActividad.class.getName());
     private boolean operacionExitosa = false; // Empezamos asumiendo que no hay éxito
-    /**
-     * Creates new form CrearActividad
-     */
-    
+    private Actividad actividadOriginal;
+
     public ActualizarActividad(java.awt.Frame parent, boolean modal, Actividad act) {
         super(parent, modal);
+        this.actividadOriginal = act;
         initComponents();
         
-        // Forzamos el tamaño de los spinners
+        // Forzamos el tamaño de los spinners (Me daban problemas con el Design de netbeans)
         java.awt.Dimension tamañoSpinner = new java.awt.Dimension(64, 26);
         jSpinnerHoraInicio.setPreferredSize(tamañoSpinner);
         jSpinnerMinutosInicio.setPreferredSize(tamañoSpinner);
@@ -59,7 +55,7 @@ public class ActualizarActividad extends javax.swing.JDialog {
             jTextFieldSala.setText(act.getSala().getNombre());
             jSpinnerAforo.setValue(act.getSala().getAforoMaximo());
             
-            // --- NUEVO: Cargar la ruta de la imagen si existe ---
+            //Cargamos la ruta de la imagen (si hay opcional)
             if (act.getRutaImagen() != null) {
                 jTextFieldImagen.setText(act.getRutaImagen());
             }
@@ -95,7 +91,7 @@ public class ActualizarActividad extends javax.swing.JDialog {
             }
         }
         
-        this.pack();
+        this.pack(); // quede la ventana empaquetada (Antes daba problemas)
     }
     public boolean isOperacionExitosa() { //devolver datos de exito
         return operacionExitosa;
@@ -461,10 +457,11 @@ public class ActualizarActividad extends javax.swing.JDialog {
     }//GEN-LAST:event_jButtonCancelarActionPerformed
 
     private void jButtonAplicarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAplicarActionPerformed
+        //Lógica de actualización de Datos
         Gestor gestor = Gestor.getInstancia();
 
         try {
-            gestor.cargarDatos(); // debug
+            gestor.cargarDatos(); 
         } catch (IOException ex) {
             System.getLogger(ActualizarActividad.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         } catch (ClassNotFoundException ex) {
@@ -498,7 +495,7 @@ public class ActualizarActividad extends javax.swing.JDialog {
             String descripcionSeleccionada = (String) jComboBoxTipo.getSelectedItem();
             TipoActividad tipoactividad = null;
 
-            // Buscamos qué enum tiene esa descripción
+            // Buscamos qué enum tiene esa descripción (Para guardar los datos correctamente)
             for (TipoActividad tipo : TipoActividad.values()) {
                 if (tipo.getDescripcion().equals(descripcionSeleccionada)) {
                     tipoactividad = tipo;
@@ -506,8 +503,7 @@ public class ActualizarActividad extends javax.swing.JDialog {
                 }
             }
 
-            // --- Creación de los objetos base (¡Sin duplicados!) ---
-            Horario horario = new Horario(dias, inicio, finalt); 
+            Horario horario = new Horario(dias, finalt, inicio); 
             
             Sala sala = new Sala(jTextFieldSala.getText(), (int) jSpinnerAforo.getValue());
             if (jTextFieldSala.getText().isBlank()){ throw new Exception("La sala debe tener título");}
@@ -515,7 +511,7 @@ public class ActualizarActividad extends javax.swing.JDialog {
             String monitor = jTextFieldMonitor.getText();
             if (monitor.isEmpty()){ throw new Exception("Debe tener un monitor asignado");}
 
-            // --- Lógica para diferenciar entre Actividad Especial o Normal ---
+            // Diferenciar entre actividad especial y básica
             Actividad nuevaActividad;
             if (jCheckBoxActividadEspecial.isSelected()) {
                 String descripcion = jTextFieldDescrpcion.getText();
@@ -533,14 +529,12 @@ public class ActualizarActividad extends javax.swing.JDialog {
             } else {
                 nuevaActividad = new Actividad(0, titulo, tipoactividad, sala, horario, monitor);
             }
-            // --- NUEVO: Guardar la ruta de la imagen al editar ---
+            // guardar imagen (opcional)
             String rutaImagen = jTextFieldImagen.getText().trim();
             if (!rutaImagen.isEmpty()) {
                 nuevaActividad.setRutaImagen(rutaImagen);
             }
-            // -----------------------------------------------------
-
-            gestor.agregarActividad(nuevaActividad);
+            gestor.actualizarActividad(actividadOriginal.getId(), nuevaActividad);
             gestor.guardarDatos();
             this.operacionExitosa = true;
             JOptionPane.showMessageDialog(this, "La actividad ha sido actualizada con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
@@ -567,73 +561,35 @@ public class ActualizarActividad extends javax.swing.JDialog {
     }//GEN-LAST:event_jCheckBoxActividadEspecialActionPerformed
 
     private void jButtonExaminarImagenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExaminarImagenActionPerformed
-        // 1. Crear el objeto JFileChooser (el buscador de archivos)
+        // Crear el fileChooser desde esta clase
         JFileChooser selectorArchivos = new JFileChooser();
 
-        // Opcional: Le decimos que empiece buscando en la carpeta del usuario
+        // que empiece desde carpeta user
         selectorArchivos.setCurrentDirectory(new java.io.File(System.getProperty("user.home")));
 
-        // 2. Crear un filtro para que el usuario solo pueda ver y elegir imágenes
+        // Solo acepta imagenes
         FileNameExtensionFilter filtroImagen = new FileNameExtensionFilter(
             "Archivos de Imagen (*.jpg, *.jpeg, *.png)", "jpg", "jpeg", "png");
 
         // Aplicamos el filtro al selector
         selectorArchivos.setFileFilter(filtroImagen);
 
-        // 3. Abrir la ventana de diálogo y guardar lo que el usuario decide
         int resultado = selectorArchivos.showOpenDialog(this);
 
-        // 4. Si el usuario le dio al botón "Abrir" (o "Aceptar")
+        // Si el usuario le dio al botón "Abrir"
         if (resultado == JFileChooser.APPROVE_OPTION) {
-            // Obtenemos el archivo que seleccionó
             java.io.File archivoSeleccionado = selectorArchivos.getSelectedFile();
-
-            // Obtenemos la ruta absoluta (ej: C:\Usuarios\David\Imágenes\yoga.png)
+            // Obtenemos la ruta absoluta
             String ruta = archivoSeleccionado.getAbsolutePath();
-
             // La escribimos en el campo de texto para que el usuario la vea y el programa la guarde
             jTextFieldImagen.setText(ruta);
-        }        // TODO add your handling code here:
+        }
     }//GEN-LAST:event_jButtonExaminarImagenActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        /*
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                ActualizarActividad dialog = new ActualizarActividad(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        }); */
-    }
-
+    
+    //He eliminado el método main ya que es necesaria tener una actividad para actualizar
+    //Si quieres usar esta interfaz tienes que desde AdminInterface editar una actividad en el botón azul de abajo
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAplicar;
     private javax.swing.JButton jButtonCancelar;

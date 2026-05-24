@@ -3,17 +3,17 @@ package clases_pl2;
 import java.io.Serializable;
 
 /**
- *
- * @author david
+ * Clase Socio (Hereda de Usuario)
+ * @author david, samuel
  */
 
 //Representa Socio registrado de JavaFit
 public class Socio extends Usuario implements Serializable {
     
-    private static final long serialVersionUID = 1L; //Recomendado
+    private static final long serialVersionUID = 1L; //Recomendado para persistencia
     //Constantes de precio
-    private static final double DESCUENTO_VIP = 0.10;
-    public static final double CUOTA_BASICO = 29.99;
+    private static final double DESCUENTO_VIP = 0.10; //Descuento
+    public static final double CUOTA_BASICO = 29.99; //Cuotas
     public static final double CUOTA_VIP = 49.99;
 
     

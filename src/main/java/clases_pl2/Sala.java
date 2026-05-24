@@ -1,10 +1,9 @@
 package clases_pl2;
-
 import java.io.Serializable;
 
 /**
- *
- * @author david
+ * Clase sala
+ * @author david, samuel
  */
 public class Sala implements Serializable {
         private static final long serialVersionUID = 1L;

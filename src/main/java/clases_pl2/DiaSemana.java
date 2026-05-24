@@ -1,8 +1,8 @@
 package clases_pl2;
 
 /**
- *
- * @author david
+ * Enumeración de días de la semana
+ * @author david, samuel
  */
 public enum DiaSemana {
     L("Lunes"),
@@ -14,7 +14,6 @@ public enum DiaSemana {
     D("Domingo");
     
     private final String nombre;
-    
     DiaSemana(String nombre){
         this.nombre = nombre;
     }

@@ -4,8 +4,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 /**
- *
- * @author david
+ * Clase Horario, pensado para las actividades
+ * @author david, samuel
  */
 public class Horario implements Serializable {
     
@@ -30,7 +30,11 @@ public class Horario implements Serializable {
     }
     
     private LocalTime horaFin;
-
+/**
+     * Get the value of HoraFin
+     *
+     * @return the value of HoraFin
+     */
     public LocalTime getHoraFin() {
         return horaFin;
     }
@@ -60,7 +64,6 @@ public class Horario implements Serializable {
     }
     
     
-    //Codigo Importante
     public boolean incluyeDia(DiaSemana dia){
          return dias.contains(dia);
     }

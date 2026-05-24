@@ -1,16 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 /**
  *
- * @author david
+ * @author david, Samuel
  */
 package clases_pl2;
 
-import clases_pl2.ActividadEspecial;
-import clases_pl2.Reserva;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -18,7 +11,7 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Clase utilitaria (helper estático) para generar recibos en ficheros de texto (.txt)
+ * Clase para crear un recibo. Archivo .txt en carpeta recibos
  * al confirmar una reserva.
  */
 public class Recibo {
@@ -28,9 +21,8 @@ public class Recibo {
     private static final DateTimeFormatter FMT_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter FMT_DATETIME = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    /** Constructor privado: clase de utilidad, no instanciable. */
+    //Como está pensado como clase utilidad, no se instancia
     private Recibo() {}
-
     /**
      * Genera un fichero de texto con el recibo de la reserva.
      *
@@ -40,7 +32,7 @@ public class Recibo {
      * @throws IOException si no se puede crear el fichero
      */
     public static String generarRecibo(Reserva reserva, String directorioRecibos) throws IOException {
-        // Aseguramos que existe el directorio
+        // Existe direcitorio
         File dir = new File(directorioRecibos);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -106,7 +98,7 @@ public class Recibo {
             bw.newLine();
             bw.write("============================================");
             bw.newLine();
-            bw.write("          Gracias por elegirnos             ");
+            bw.write("       Gracias por elegir Javafit           ");
             bw.newLine();
             bw.write("============================================");
         }

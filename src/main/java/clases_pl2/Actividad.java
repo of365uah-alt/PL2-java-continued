@@ -3,14 +3,13 @@ package clases_pl2;
 import java.io.Serializable;
 /**
  *
- * @author david
+ * @author david, samuel
  */
-//Activadad de gimnasio, puede ser especializada a ActividadEspecial
+//Activadad de gimnasio, puede ser especializada a ActividadEspecial (herencia)
 public class Actividad implements Serializable {
     
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L; //Persistencia
 
-    
     private int id;
     private String titulo;
     private TipoActividad tipo; //Enumeración de 4 tipos
