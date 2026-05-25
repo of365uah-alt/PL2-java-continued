@@ -11,6 +11,12 @@ public class Sala implements Serializable {
     
     private String nombre;
     private int aforoMaximo;
+
+    /**
+     * Constructor
+     * @param nombre
+     * @param aforoMaximo
+     */
     public Sala(String nombre, int aforoMaximo) {
         this.nombre = nombre;
         this.aforoMaximo = aforoMaximo;

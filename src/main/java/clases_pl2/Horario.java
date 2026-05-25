@@ -14,6 +14,12 @@ public class Horario implements Serializable {
     
     private List<DiaSemana> dias;
 
+    /**
+     * Constructor de Horario
+     * @param dias Lista de enumeracion DiaSemana
+     * @param horaFin
+     * @param horaInicio
+     */
     public Horario(List<DiaSemana> dias, LocalTime horaFin, LocalTime horaInicio) {
         this.dias = dias;
         this.horaFin = horaFin;
@@ -39,6 +45,10 @@ public class Horario implements Serializable {
         return horaFin;
     }
 
+    /**
+     * setea el valor de Horafin
+     * @param horaFin
+     */
     public void setHoraFin(LocalTime horaFin) {
         this.horaFin = horaFin;
     }
@@ -46,10 +56,18 @@ public class Horario implements Serializable {
 
     private LocalTime horaInicio;
 
+    /**
+     *
+     * @return horainicio
+     */
     public LocalTime getHoraInicio() {
         return horaInicio;
     }
 
+    /**
+     *setea horaincio
+     * @param horaInicio
+     */
     public void setHoraInicio(LocalTime horaInicio) {
         this.horaInicio = horaInicio;
     }
@@ -63,7 +81,11 @@ public class Horario implements Serializable {
         this.dias = dias;
     }
     
-    
+    /**
+     * comprueba si un día está en el horario
+     * @param dia
+     * @return true si el horario contiene el día del paramentro
+     */
     public boolean incluyeDia(DiaSemana dia){
          return dias.contains(dia);
     }

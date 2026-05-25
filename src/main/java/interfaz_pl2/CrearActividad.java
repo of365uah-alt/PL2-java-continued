@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
- */
 package interfaz_pl2;
 
 import clases_pl2.Actividad;
@@ -11,7 +7,6 @@ import clases_pl2.Horario;
 import clases_pl2.TipoActividad;
 import java.io.IOException;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import persistencia.Gestor;
 import java.util.ArrayList;
 import clases_pl2.Sala;
@@ -20,13 +15,13 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
- *
- * @author david
+ * Interfaz para crear una actividad (especial o básica)
+ * Esta interfaz se crea desde AdminInterface.java en el botón verde de crear actividad
+ * @author david, samuel
  */
 public class CrearActividad extends javax.swing.JDialog {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CrearActividad.class.getName());
-
     /**
      * Creates new form CrearActividad
      */
@@ -41,15 +36,16 @@ public class CrearActividad extends javax.swing.JDialog {
         jSpinnerMinutosInicio.setPreferredSize(tamañoSpinner);
         jSpinnerHoraFin.setPreferredSize(tamañoSpinner);
         jSpinnerMinutosFin.setPreferredSize(tamañoSpinner);
-        //ocultar por defecto
+        //ocultar por defecto (damos por defecto que es básica la actividad)
         jLabelPrecio.setVisible(false);
         jFormattedTextFieldPrecio.setVisible(false);
         jLabelDescripcion.setVisible(false);
         jTextFieldDescrpcion.setVisible(false);
         
         
-        // Le decimos a la ventana que recalcule los tamaños con estas nuevas reglas
+        // Le decimos a la ventana que recalcule los tamaños (por lo ocutado)
         this.pack();
+        //lógica del ComboBox de actividades (Enumeración TipoActividad)
         for (int i = 0; i < TipoActividad.values().length;i++){
             this.jComboBoxTipo.addItem(TipoActividad.values()[i].getDescripcion());
         }
@@ -407,15 +403,14 @@ public class CrearActividad extends javax.swing.JDialog {
     }//GEN-LAST:event_jTextFieldTituloActionPerformed
 
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
-        this.dispose();        // TODO add your handling code here:
+        this.dispose();        // Cancelamos la creación
     }//GEN-LAST:event_jButtonCancelarActionPerformed
 
     private void jButtonAplicarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAplicarActionPerformed
         Gestor gestor = Gestor.getInstancia();
-
+        //Posibles excepciones de cargar datos
         try {
-            gestor.cargarDatos(); // debug
-            // TODO add your handling code here:
+            gestor.cargarDatos();
         } catch (IOException ex) {
             System.getLogger(CrearActividad.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         } catch (ClassNotFoundException ex) {
@@ -448,7 +443,7 @@ public class CrearActividad extends javax.swing.JDialog {
             
             TipoActividad tipoactividad = null;
 
-            // 2. Buscamos qué enum tiene esa descripción
+            //Buscamos qué enum tiene esa descripción
             for (TipoActividad tipo : TipoActividad.values()) {
                 if (tipo.getDescripcion().equals(descripcionSeleccionada)) {
                     tipoactividad = tipo;
@@ -465,19 +460,19 @@ public class CrearActividad extends javax.swing.JDialog {
 
             Actividad actividad; // Declaramos la variable genérica
 
-            // Comprobamos si la casilla está marcada
+            // Comprobamos si la casilla de actividad especial está marcada
             if (jCheckBoxActividadEspecial.isSelected()) {
                 
-                // 1. Validar la descripción
+                // Validar la descripción
                 String descripcion = jTextFieldDescrpcion.getText();
                 if (descripcion.isBlank()) { 
                     throw new Exception("La actividad especial debe tener una descripción."); 
                 }
                 
-                // 2. Validar y extraer el precio de forma segura
+                // Validar y extraer el precio
                 double precio = 0.0;
                 try {
-                    // Obtenemos el texto, le quitamos el símbolo de euro y cambiamos comas por puntos
+                    // Obtenemos el texto, le quitamos el símbolo de euro y cambiamos comas por puntos (Importante!! causaba errores)
                     String textoPrecio = jFormattedTextFieldPrecio.getText().replace("€", "").replace(",", ".").trim();
                     if (textoPrecio.isBlank()) throw new Exception();
                     precio = Double.parseDouble(textoPrecio);
@@ -485,26 +480,24 @@ public class CrearActividad extends javax.swing.JDialog {
                     throw new Exception("El precio introducido no es válido. Escribe solo números (ej: 15.50)");
                 }
 
-                // 3. Crear el objeto ActividadEspecial
+                // Crear el objeto ActividadEspecial
                 actividad = new ActividadEspecial(precio, descripcion, 0, titulo, tipoactividad, sala, horario, monitor);
                 
             } else {
-                // 4. Si no es especial, creamos la Actividad normal
+                // Si no es especial, creamos la Actividad normal
                 actividad = new Actividad(0, titulo, tipoactividad, sala, horario, monitor);
             }
 
-            // --- NUEVO: Guardar la ruta de la imagen si el usuario la ha seleccionado ---
+            //Guardar la ruta de la imagen si el usuario la ha seleccionado (Opcional)
             String rutaImagen = jTextFieldImagen.getText().trim();
             if (!rutaImagen.isEmpty()) {
                 actividad.setRutaImagen(rutaImagen);
             }
-            // --------------------------------------------------------------------------
-
-            // Guardamos en el gestor
             // Guardamos en el gestor (funcionará igual para ambas porque ActividadEspecial hereda de Actividad)
             gestor.agregarActividad(actividad);
             gestor.guardarDatos();
             
+            //diálogo
             JOptionPane.showMessageDialog(this, "La actividad ha sido creada con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
 
@@ -530,61 +523,38 @@ public class CrearActividad extends javax.swing.JDialog {
         jTextFieldDescrpcion.setVisible(esEspecial);
         
         // Reajustamos la ventana para que se adapte al nuevo contenido
-        this.pack();        // TODO add your handling code here:
+        this.pack();
     }//GEN-LAST:event_jCheckBoxActividadEspecialActionPerformed
 
     private void jButtonExaminarImagenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExaminarImagenActionPerformed
-        // 1. Crear el objeto JFileChooser (el buscador de archivos)
+        // Crear el objeto JFileChooser (el buscador de archivos)
         JFileChooser selectorArchivos = new JFileChooser();
-        
-        // Opcional: Le decimos que empiece buscando en la carpeta del usuario
+        // Iniciarlo en carpeta usuario
         selectorArchivos.setCurrentDirectory(new java.io.File(System.getProperty("user.home")));
-        
-        // 2. Crear un filtro para que el usuario solo pueda ver y elegir imágenes
+        // Crear un filtro para que el usuario solo pueda ver y elegir imágenes
         FileNameExtensionFilter filtroImagen = new FileNameExtensionFilter(
                 "Archivos de Imagen (*.jpg, *.jpeg, *.png)", "jpg", "jpeg", "png");
         
         // Aplicamos el filtro al selector
         selectorArchivos.setFileFilter(filtroImagen);
         
-        // 3. Abrir la ventana de diálogo y guardar lo que el usuario decide
+        // Abrir la ventana de diálogo y guardar lo que el usuario decide
         int resultado = selectorArchivos.showOpenDialog(this);
         
-        // 4. Si el usuario le dio al botón "Abrir" (o "Aceptar")
         if (resultado == JFileChooser.APPROVE_OPTION) {
             // Obtenemos el archivo que seleccionó
             java.io.File archivoSeleccionado = selectorArchivos.getSelectedFile();
             
-            // Obtenemos la ruta absoluta (ej: C:\Usuarios\David\Imágenes\yoga.png)
+            // Obtenemos la ruta absoluta
             String ruta = archivoSeleccionado.getAbsolutePath();
-            
             // La escribimos en el campo de texto para que el usuario la vea y el programa la guarde
             jTextFieldImagen.setText(ruta);
-        }        // TODO add your handling code here:
+        }        
     }//GEN-LAST:event_jButtonExaminarImagenActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+    /* Quitamos el método main (Lo comento por debug)
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
+        //Método Main para hacer debug, la manera correcta es inicializar la interfaz desde AdminInterface
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -598,7 +568,7 @@ public class CrearActividad extends javax.swing.JDialog {
                 dialog.setVisible(true);
             }
         });
-    }
+    } */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAplicar;

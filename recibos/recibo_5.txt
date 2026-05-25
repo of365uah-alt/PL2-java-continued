@@ -1,7 +1,7 @@
 ============================================
           RECIBO - JAVAFIT GIMNASIO         
 ============================================
-Número de reserva : #7
+Número de reserva : #5
 Fecha de emisión   : 25/05/2026 14:58
 --------------------------------------------
 SOCIO
@@ -10,14 +10,15 @@ SOCIO
   Tipo    : Básico
 --------------------------------------------
 ACTIVIDAD
-  Título  : Clase yoga matutina
+  Título  : Yoga Especial fin de semana
   Tipo    : Yoga
   Monitor : Carlos Kirk
   Sala    : Sala A
-  Horario : [Lunes, Martes, Miércoles, Jueves], 09:15 - 10:00
-  Fecha   : 03/06/2026
+  Horario : [Viernes, Sábado], 18:00 - 19:10
+  Fecha   : 06/06/2026
+  Precio base: 3,99€
 --------------------------------------------
-  TOTAL COBRADO: 0,00€
+  TOTAL COBRADO: 3,99€
   Tarjeta: **** **** **** 4321
 ============================================
        Gracias por elegir Javafit           

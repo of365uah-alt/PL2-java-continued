@@ -12,6 +12,17 @@ public class ActividadEspecial extends Actividad implements Serializable {
     private double Precio;
     private String descripcion;
 
+    /**
+     * Constructor
+     * @param Precio
+     * @param descripcion
+     * @param id
+     * @param titulo
+     * @param tipo
+     * @param sala
+     * @param horario
+     * @param monitor
+     */
     public ActividadEspecial(double Precio, String descripcion, int id, String titulo, TipoActividad tipo, Sala sala, Horario horario, String monitor) {
         super(id, titulo, tipo, sala, horario, monitor);
         this.Precio = Precio;
@@ -56,7 +67,10 @@ public class ActividadEspecial extends Actividad implements Serializable {
         this.Precio = Precio;
     }
 
-    
+    /**
+     *
+     * @return esEspecial boolean
+     */
     @Override
     public boolean esEspecial(){
         return true;

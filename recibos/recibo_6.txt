@@ -2,23 +2,23 @@
           RECIBO - JAVAFIT GIMNASIO         
 ============================================
 Número de reserva : #6
-Fecha de emisión   : 24/05/2026 22:46
+Fecha de emisión   : 25/05/2026 14:58
 --------------------------------------------
 SOCIO
-  Nombre  : david
-  Correo  : david@javafit.com
+  Nombre  : ana
+  Correo  : ana@javafit.com
   Tipo    : Básico
 --------------------------------------------
 ACTIVIDAD
-  Título  : HIIT
-  Tipo    : Musculación
-  Monitor : Jorge
-  Sala    : SalaB
-  Horario : [Martes, Miércoles, Jueves], 17:40 - 17:10
-  Fecha   : 26/05/2026
+  Título  : Clase Ciclio Diaria
+  Tipo    : Cardio
+  Monitor : Daniel
+  Sala    : Sala C
+  Horario : [Lunes, Martes, Miércoles, Jueves], 09:00 - 09:45
+  Fecha   : 02/06/2026
 --------------------------------------------
   TOTAL COBRADO: 0,00€
-  Tarjeta: **** **** **** 411
+  Tarjeta: **** **** **** 4321
 ============================================
-          Gracias por elegirnos             
+       Gracias por elegir Javafit           
 ============================================

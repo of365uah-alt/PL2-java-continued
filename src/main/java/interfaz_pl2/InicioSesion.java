@@ -1,17 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package interfaz_pl2;
 
 import clases_pl2.Administrador;
 import clases_pl2.Socio;
 import java.io.IOException;
+import javax.swing.JOptionPane;
 import persistencia.Gestor;
 
 /**
- *
- * @author david
+ * interfaz de inicio de sesión
+ * Esta interfaz es la principal del programa, es la que debe ser ejecutada
+ * @author david, samuel
  */
 public class InicioSesion extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(InicioSesion.class.getName());
@@ -144,52 +142,47 @@ public class InicioSesion extends javax.swing.JFrame {
          Gestor gestor = Gestor.getInstancia();
         try {
             gestor.cargarDatos(); // debug
-            // TODO add your handling code here:
+            // Excepciones lanzadas por el gestor
         } catch (IOException ex) {
             System.getLogger(CrearSocio.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         } catch (ClassNotFoundException ex) {
             System.getLogger(CrearSocio.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
+        //obtenemos datos de incio sesión
         String correo = jTextField1.getText();
         String passwordIngresada = new String(this.jPasswordField1.getPassword());
-        for (Socio i : gestor.getSocios()) {
-            System.out.println(i.getCorreo()); ///DEBUG!!!!
-        }
-
+        //Intentamos autenticar el inicio de sesión (Socio)
         try{
             Socio socio = gestor.autenticarSocio(correo, passwordIngresada);
+            // Se lanza una excepción si el socio no es encontrado
             UserInterface mainInterface = new UserInterface(socio);
             mainInterface.setVisible(true);
             mainInterface.setLocationRelativeTo(null); //Centrar
             this.dispose();
         }catch(IllegalArgumentException e){
-            //caso admin
+            //caso admin (en caso de no encontrar socio)
             try{
                 Administrador admin = gestor.autenticarAdmin(correo, passwordIngresada);
+                //Se lanza exepción si no se encuentra cuenta de admin (mensaje de error)
                 AdminInterface mainInterface = new AdminInterface(admin);
                 mainInterface.setVisible(true);
                 mainInterface.setLocationRelativeTo(null); //Centrar
                 this.dispose();
+                //excepción lanzada desde el gestor (no encontrado)
             }catch (IllegalArgumentException i){
-                ErrorCorreo dialog = new ErrorCorreo(this, true, "Usuario no encontrado"); // Formateamos en html para 
-                dialog.setVisible(true);
-                dialog.setLocationRelativeTo(this);
-  
+                JOptionPane.showMessageDialog(this,"Usuario no encontrado. El nombre de usuario o la contraseña están incorrectas","ERROR!",JOptionPane.ERROR_MESSAGE);
+
             }catch (Exception i){
-                ErrorCorreo dialog = new ErrorCorreo(this, true, e.toString()); // Formateamos en html para  
-                dialog.setVisible(true);
-                dialog.setLocationRelativeTo(this);
+                JOptionPane.showMessageDialog(this,e.getMessage(),"ERROR!",JOptionPane.ERROR_MESSAGE);
+
             }
 
         }catch (IOException e){
-            ErrorCorreo dialog = new ErrorCorreo(this, true, e.toString()); // Formateamos en html para
-            dialog.setVisible(true);
-            dialog.setLocationRelativeTo(this);
+                JOptionPane.showMessageDialog(this,e.getMessage(),"ERROR!",JOptionPane.ERROR_MESSAGE);
+
 
         }catch (ClassNotFoundException e ){
-            ErrorCorreo dialog = new ErrorCorreo(this, true, e.toString()); // Formateamos en html para
-            dialog.setVisible(true);
-            dialog.setLocationRelativeTo(this);
+                JOptionPane.showMessageDialog(this, e.getMessage(),"ERROR!",JOptionPane.ERROR_MESSAGE);
 
         }
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -199,14 +192,11 @@ public class InicioSesion extends javax.swing.JFrame {
     }//GEN-LAST:event_jPasswordField1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        //Registrar socio (Crea una nueva interfaz)
         var registroInterface = new CrearSocio(this,true);
         registroInterface.setVisible(true);
         registroInterface.setLocationRelativeTo(null); //Centrar
     }//GEN-LAST:event_jButton2ActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -228,6 +218,7 @@ public class InicioSesion extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> new InicioSesion().setVisible(true));
     }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

@@ -833,7 +833,7 @@ public class AdminInterface extends javax.swing.JFrame {
             actualizarTablaReservas(gestor.getTodasReservas());
         }
     }//GEN-LAST:event_jButtonBuscarReservasActionPerformed
-
+ /* comento el método main para que sepas exactamente que interfaz abrir, 
     public static void main(String args[]) {
         //Método Main para hacer Debug
         // La manera correcta es mediante iniciosesion.java
@@ -846,7 +846,7 @@ public class AdminInterface extends javax.swing.JFrame {
                 System.getLogger(AdminInterface.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
             }
         });
-    }
+    } */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BuscarBoton;

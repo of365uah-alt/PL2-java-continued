@@ -1,24 +1,26 @@
 ============================================
           RECIBO - JAVAFIT GIMNASIO         
 ============================================
-Número de reserva : #7
-Fecha de emisión   : 25/05/2026 14:58
+Número de reserva : #3
+Fecha de emisión   : 25/05/2026 14:57
 --------------------------------------------
 SOCIO
-  Nombre  : ana
-  Correo  : ana@javafit.com
-  Tipo    : Básico
+  Nombre  : David Gutiérrez
+  Correo  : david@javafit.com
+  Tipo    : VIP
 --------------------------------------------
 ACTIVIDAD
-  Título  : Clase yoga matutina
+  Título  : HIIT Especializado
   Tipo    : Yoga
-  Monitor : Carlos Kirk
-  Sala    : Sala A
-  Horario : [Lunes, Martes, Miércoles, Jueves], 09:15 - 10:00
-  Fecha   : 03/06/2026
+  Monitor : Daniel
+  Sala    : Sala B
+  Horario : [Viernes, Sábado], 10:00 - 11:30
+  Fecha   : 05/06/2026
+  Precio base: 5,00€
+  Descuento VIP (10%): -0,50€
 --------------------------------------------
-  TOTAL COBRADO: 0,00€
-  Tarjeta: **** **** **** 4321
+  TOTAL COBRADO: 4,50€
+  Tarjeta: **** **** **** 1111
 ============================================
        Gracias por elegir Javafit           
 ============================================

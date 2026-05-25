@@ -18,6 +18,15 @@ public class Actividad implements Serializable {
     private String monitor;
     private String rutaImagen; //Opcional, no estará en el constructor
 
+    /**
+     * Constructor
+     * @param id
+     * @param titulo
+     * @param tipo
+     * @param sala
+     * @param horario
+     * @param monitor
+     */
     public Actividad(int id, String titulo, TipoActividad tipo, Sala sala, Horario horario, String monitor) {
         this.id = id;
         this.titulo = titulo;

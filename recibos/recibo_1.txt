@@ -1,13 +1,13 @@
 ============================================
           RECIBO - JAVAFIT GIMNASIO         
 ============================================
-Número de reserva : #7
-Fecha de emisión   : 25/05/2026 14:58
+Número de reserva : #1
+Fecha de emisión   : 25/05/2026 14:56
 --------------------------------------------
 SOCIO
-  Nombre  : ana
-  Correo  : ana@javafit.com
-  Tipo    : Básico
+  Nombre  : David Gutiérrez
+  Correo  : david@javafit.com
+  Tipo    : VIP
 --------------------------------------------
 ACTIVIDAD
   Título  : Clase yoga matutina
@@ -15,10 +15,10 @@ ACTIVIDAD
   Monitor : Carlos Kirk
   Sala    : Sala A
   Horario : [Lunes, Martes, Miércoles, Jueves], 09:15 - 10:00
-  Fecha   : 03/06/2026
+  Fecha   : 02/06/2026
 --------------------------------------------
   TOTAL COBRADO: 0,00€
-  Tarjeta: **** **** **** 4321
+  Tarjeta: **** **** **** 1111
 ============================================
        Gracias por elegir Javafit           
 ============================================

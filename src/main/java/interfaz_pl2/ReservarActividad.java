@@ -1,24 +1,19 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package interfaz_pl2;
 
 import clases_pl2.Actividad;
 import clases_pl2.ActividadEspecial;
-import clases_pl2.Horario;
 import clases_pl2.Socio;
-import clases_pl2.TipoActividad;
 
-import java.time.LocalDate; // Formato de fecha moderno
+import java.time.LocalDate; 
 import java.time.ZoneId;    // Para ayudar en la conversión de fechas
-import java.util.Date;      // Formato de fecha del JSpinner
-import javax.swing.JOptionPane; // Para mostrar mensajes emergentes
+import java.util.Date;     
+import javax.swing.JOptionPane; 
 import persistencia.Gestor;
 
 /**
- *
- * @author david
+ * Interfaz para reservar una actividad
+ * esta interfaz se sale cuando un socio en UserInterface le da al botón de reservar una actividad
+ * @author david, samuel
  */
 public class ReservarActividad extends javax.swing.JFrame {
     
@@ -38,7 +33,7 @@ public class ReservarActividad extends javax.swing.JFrame {
         this.actividad = actividad;
         this.socio = socio;
         
-        initComponents(); // Carga la interfaz gráfica
+        initComponents();
         
         // Hacemos que al cerrar esta ventana no se cierre todo el programa
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -65,14 +60,13 @@ public class ReservarActividad extends javax.swing.JFrame {
         // Calculamos el coste considerando si es especial y si el socio es VIP
         if (actividad.esEspecial()) {
             ActividadEspecial ae = (ActividadEspecial) actividad;
-            // Usamos tu estupendo método calcularPrecio para aplicar el descuento si es necesario
+            // Usamos el método calcular precio para saber el método
             double precioFinal = socio.calcularPrecio(ae.getPrecio());
             jLabelCoste.setText(String.format("%.2f €", precioFinal));
         } else {
             jLabelCoste.setText("Incluido en tu cuota mensual");
         }
         
-        // Un detalle extra para los días disponibles
         jLabelDiasDisponibles.setText("Horario original: " + actividad.getHorario().toString());
         this.pack();
     }
@@ -251,8 +245,8 @@ public class ReservarActividad extends javax.swing.JFrame {
                     .addComponent(jLabel20)
                     .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabelDiasDisponibles)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
+                .addComponent(jLabelDiasDisponibles, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonCancelar)
                     .addComponent(jButtonReservar))
@@ -264,34 +258,33 @@ public class ReservarActividad extends javax.swing.JFrame {
 
     private void jButtonReservarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonReservarActionPerformed
         try {
-            // 1. Obtener la fecha seleccionada en el JSpinner
-            // El JSpinner devuelve un Object, así que lo "casteamos" a java.util.Date
+            // Obtener la fecha seleccionada en el JSpinner
+            // Se castea java.util.Date (al parecer funciona sin mucha complicación)
             Date fechaSeleccionada = (Date) jSpinner1.getValue();
             
-            // 2. Convertir java.util.Date a java.time.LocalDate
+            // Convertir java.util.Date a java.time.LocalDate
+            //Utilizamos una serie de métodos como en un stream
             LocalDate fechaLocal = fechaSeleccionada.toInstant()
                                       .atZone(ZoneId.systemDefault())
                                       .toLocalDate();
             
-            // 3. Obtener la instancia de nuestro Gestor y procesar la reserva
+            // Obtener la instancia de nuestro Gestor y procesar la reserva
             Gestor gestor = Gestor.getInstancia();
             
             // Este método lanzará un error si el aforo está lleno o el día es incorrecto
             gestor.crearReserva(socio, actividad, fechaLocal);
+            gestor.guardarDatos(); //Si hay un error no se hará
             
-            // 4. Si todo ha ido bien, guardamos los datos permanentemente
-            gestor.guardarDatos();
-            
-            // 5. Avisar al usuario del éxito y cerrar la ventana
+            // Avisar al usuario del éxitop y cerrar la ventana
             JOptionPane.showMessageDialog(this, 
                 "¡Reserva confirmada con éxito para el " + fechaLocal + "!", 
                 "Reserva Exitosa", 
                 JOptionPane.INFORMATION_MESSAGE);
                 
-            this.dispose(); // Cierra solo esta ventana, manteniendo el menú principal abierto
+            this.dispose(); // Cierra solo esta ventana
             
         } catch (IllegalArgumentException ex) {
-            // Aquí capturamos los mensajes que escribiste en el Gestor (ej: "No hay aforo")
+            // Aquí capturamos los mensajes que de error del gestor
             JOptionPane.showMessageDialog(this, 
                 ex.getMessage(), 
                 "No se pudo realizar la reserva", 
@@ -307,12 +300,10 @@ public class ReservarActividad extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonReservarActionPerformed
 
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
-        this.dispose();        // TODO add your handling code here:
+        this.dispose();        //cancelar
     }//GEN-LAST:event_jButtonCancelarActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+   // NO hay método main
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonCancelar;

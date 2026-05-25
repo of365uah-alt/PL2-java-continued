@@ -11,6 +11,12 @@ public abstract class Usuario implements Serializable {
     private String clave;
     
     // Constructor
+
+    /**
+     *
+     * @param correo
+     * @param clave
+     */
     public Usuario(String correo, String clave) {
         this.correo = correo;
         this.clave = clave;
@@ -54,9 +60,14 @@ public abstract class Usuario implements Serializable {
         this.correo = correo;
     }
     
+    /**
+     * autenticar que su correo y clave son los correctos
+     * @param correo
+     * @param clave
+     * @return True si se autentica correctamente
+     */
     public boolean autenticar(String correo, String clave){
         return this.correo.equalsIgnoreCase(correo) && this.clave.equalsIgnoreCase(clave);
-        //autenticar que su correo y clave son los correctos
     }
 
     @Override

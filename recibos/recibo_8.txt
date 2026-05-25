@@ -2,25 +2,25 @@
           RECIBO - JAVAFIT GIMNASIO         
 ============================================
 Número de reserva : #8
-Fecha de emisión   : 24/05/2026 23:08
+Fecha de emisión   : 25/05/2026 15:33
 --------------------------------------------
 SOCIO
-  Nombre  : Debug
-  Correo  : 
+  Nombre  : Samuel Dascalescu
+  Correo  : samuel@javafit.com
   Tipo    : VIP
 --------------------------------------------
 ACTIVIDAD
-  Título  : clase especial2
+  Título  : HIIT Especializado
   Tipo    : Musculación
-  Monitor : simga 2
-  Sala    : Sala D
-  Horario : [Jueves, Viernes], 12:15 - 10:00
-  Fecha   : 28/05/2026
-  Precio base: 22,00€
-  Descuento VIP (10%): -2,20€
+  Monitor : Daniel
+  Sala    : Sala B
+  Horario : [Viernes, Sábado], 10:00 - 11:30
+  Fecha   : 05/06/2026
+  Precio base: 5,00€
+  Descuento VIP (10%): -0,50€
 --------------------------------------------
-  TOTAL COBRADO: 19,80€
-  Tarjeta: **** **** **** 
+  TOTAL COBRADO: 4,50€
+  Tarjeta: **** **** **** 1111
 ============================================
-          Gracias por elegirnos             
+       Gracias por elegir Javafit           
 ============================================

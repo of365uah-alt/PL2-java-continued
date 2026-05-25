@@ -93,6 +93,10 @@ public class ActualizarActividad extends javax.swing.JDialog {
         
         this.pack(); // quede la ventana empaquetada (Antes daba problemas)
     }
+
+    /**
+     * @return True si se ha completado con exito
+     */
     public boolean isOperacionExitosa() { //devolver datos de exito
         return operacionExitosa;
     }

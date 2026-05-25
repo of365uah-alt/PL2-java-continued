@@ -29,6 +29,17 @@ public class Socio extends Usuario implements Serializable {
     
     
     //Constructor
+
+    /**
+     * Constructor
+     * @param nombre
+     * @param telefono
+     * @param direccion
+     * @param tarjetaDeCredito
+     * @param esVip
+     * @param correo
+     * @param clave
+     */
     
     public Socio(String nombre, int telefono, String direccion, String tarjetaDeCredito, boolean esVip, String correo, String clave) {
         super(correo, clave);

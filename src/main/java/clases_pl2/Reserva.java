@@ -21,6 +21,14 @@ public class Reserva implements Comparable<Reserva>, Serializable { //Comparable
     //Fecha de tomar la reserva
     private LocalDateTime fechaReserva;
 
+    /**
+     * Constructor
+     * @param id
+     * @param socio
+     * @param actividad
+     * @param fecha
+     * @param coste
+     */
     public Reserva(int id, Socio socio, Actividad actividad, LocalDate fecha, double coste) {
         this.id = id;
         this.socio = socio;
@@ -144,6 +152,11 @@ public class Reserva implements Comparable<Reserva>, Serializable { //Comparable
         this.id = id;
     }
 
+    /**
+     * Sirve para comparar dos reservas
+     * @param otra
+     * @return -1,0,1 dependiendo de la comparación de fechas
+     */
     @Override
     public int compareTo(Reserva otra){
         return this.fecha.compareTo(otra.fecha);

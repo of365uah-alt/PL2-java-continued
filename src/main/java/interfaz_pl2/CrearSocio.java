@@ -1,25 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
- */
 package interfaz_pl2;
 
-import clases_pl2.Actividad;
-import clases_pl2.DiaSemana;
-import clases_pl2.Horario;
-import clases_pl2.TipoActividad;
 import java.io.IOException;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import persistencia.Gestor;
-import java.util.ArrayList;
-import clases_pl2.Sala;
 import clases_pl2.Socio;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author david
+ * Registra un nuevo usuario
+ * La interfaz aparece de InicioSesion.java
+ * @author david, samuel
  */
 public class CrearSocio extends javax.swing.JDialog {
     
@@ -214,15 +203,15 @@ public class CrearSocio extends javax.swing.JDialog {
     }//GEN-LAST:event_jTextFieldNombreActionPerformed
 
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
-        this.dispose();        // TODO add your handling code here:
+        this.dispose();        // Cancela el registro
     }//GEN-LAST:event_jButtonCancelarActionPerformed
 
     private void jButtonAplicarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAplicarActionPerformed
         Gestor gestor = Gestor.getInstancia();
 
         try {
-            gestor.cargarDatos(); // debug
-            // TODO add your handling code here:
+            gestor.cargarDatos();
+            // Posibles errores de cargarDatos
         } catch (IOException ex) {
             System.getLogger(CrearSocio.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         } catch (ClassNotFoundException ex) {
@@ -230,7 +219,7 @@ public class CrearSocio extends javax.swing.JDialog {
         }
         
         try {
-            //Validación de contraseñas
+            //Validación de contraseñas (deben coincidir)
             String Contrasenna = new String(jPasswordContrasenna.getPassword());
             String repetir = new String(jPasswordRepetir.getPassword());
             if (Contrasenna.isBlank()){
@@ -297,28 +286,9 @@ public class CrearSocio extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldDirecciónActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+/* Comento el método main, se debe llegar a la interfaz desde incio sesión
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
+        //Método main para hacer debug, la manera correcta es desde InicioSesion.java
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -332,7 +302,7 @@ public class CrearSocio extends javax.swing.JDialog {
                 dialog.setVisible(true);
             }
         });
-    }
+    }*/
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAplicar;

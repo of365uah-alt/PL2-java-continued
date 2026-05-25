@@ -18,6 +18,10 @@ public enum DiaSemana {
         this.nombre = nombre;
     }
     
+    /**
+     *
+     * @return el nombre largo de la enumeracion
+     */
     public String getNombre(){
         return nombre;
     }

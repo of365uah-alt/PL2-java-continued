@@ -1,9 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package persistencia;
-
 import clases_pl2.Reserva;
 import clases_pl2.Socio;
 import clases_pl2.Administrador;
@@ -11,10 +6,9 @@ import clases_pl2.Actividad;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 /**
- *
- * @author david
+ * La clase con todos los datos que se guardan en data.dat
+ * @author david, samuel
  */
 public class EstadoAplicacion implements Serializable {
 
